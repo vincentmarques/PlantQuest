@@ -262,8 +262,8 @@ Notes: QuizService (4 types : description, vrai/faux, famille, habitat — shuff
 **Livrables** : Au moins 2 types de défis jouables, système de badges fonctionnel.
 
 ```
-STATUS: [ ] À FAIRE
-Notes: 
+STATUS: [x] TERMINÉ
+Notes: BadgeService (12 badges, checkProgressBadges). ChallengeService (7 défis : daily seed déterministe, sprint x2 avec timer, streak x2, thématique edible/toxic). ChallengeCard (statut locked/available/completed). ChallengeSession (timer countdown, détection série, délai adaptatif). ChallengeResult (animation bounce victoire, badges débloqués). Orchestrateur complet list→playing→result.
 ```
 
 ---
@@ -468,7 +468,7 @@ Notes:
 | 4 | Core Services | [x] |
 | 5 | Identification par photo | [x] |
 | 6 | Quiz | [x] |
-| 7 | Défis | [ ] |
+| 7 | Défis | [x] |
 | 8 | Collection / Herbier | [ ] |
 | 9 | Dashboard & Progression | [ ] |
 | 10 | Onboarding & UX Finale | [ ] |

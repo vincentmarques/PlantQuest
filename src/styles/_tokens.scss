@@ -1,5 +1,5 @@
 // ============================================================
-// Breakpoints SCSS (utilisés via mixin respond-to)
+// Breakpoints SCSS
 // ============================================================
 $bp-sm:  480px;
 $bp-md:  768px;
@@ -14,55 +14,56 @@ $bp-xl:  1280px;
 }
 
 // ============================================================
-// CSS Custom Properties — déclarées sur :root
+// CSS Custom Properties
 // ============================================================
 :root {
-  // --- Couleurs : palette principale (verts botaniques) ---
-  --color-green-100: #f0f7ee;
-  --color-green-200: #d4ebcc;
-  --color-green-300: #a8d4a0;
-  --color-green-400: #6db96a;
-  --color-green-500: #3d8b37;
-  --color-green-600: #2d6b28;
-  --color-green-700: #1e4a1a;
+  // --- Palette verte — plus vive, plus fraîche ---
+  --color-green-50:  #edfaee;
+  --color-green-100: #d4f4d6;
+  --color-green-200: #a4e4a9;
+  --color-green-300: #68cc71;
+  --color-green-400: #4ab852;
+  --color-green-500: #3aaa42;   // Primaire
+  --color-green-600: #2a8a31;
+  --color-green-700: #1a6020;
 
-  // --- Couleurs : palette secondaire (terres & ocres) ---
+  // --- Palette secondaire — terres douces ---
   --color-earth-100: #fdf6ec;
   --color-earth-200: #f5e6c8;
   --color-earth-300: #e8c98a;
   --color-earth-400: #c9973e;
   --color-earth-500: #a0722a;
 
-  // --- Neutres ---
-  --color-cream:     #faf8f3;
-  --color-sand:      #e8e2d4;
-  --color-stone-300: #b5ae9f;
-  --color-stone-500: #7a7267;
-  --color-stone-700: #3d3830;
-  --color-ink:       #1a1714;
+  // --- Neutres — plus blancs, plus aérés ---
+  --color-white:     #ffffff;
+  --color-bg:        #f4f7f4;   // Léger vert-gris au fond
+  --color-surface:   #ffffff;
+  --color-surface-2: #f0f4f0;   // Surface secondaire
+  --color-border:    #e2e8e2;
+  --color-border-light: #eef2ee;
 
-  // --- Couleurs sémantiques ---
-  --color-success: #3d8b37;
-  --color-warning: #c9973e;
-  --color-error:   #c0392b;
+  --color-stone-200: #d8ddd8;
+  --color-stone-400: #9aa49a;
+  --color-stone-600: #5a6a5a;
+  --color-ink:       #141c14;   // Quasi-noir légèrement vert
+
+  // --- Sémantiques ---
+  --color-success: var(--color-green-500);
+  --color-warning: #e6971e;
+  --color-error:   #e03e2d;
   --color-info:    #2980b9;
-
-  // --- Surfaces ---
-  --color-bg:      var(--color-cream);
-  --color-surface: #ffffff;
-  --color-border:  var(--color-sand);
 
   // --- Texte ---
   --color-text:         var(--color-ink);
-  --color-text-muted:   var(--color-stone-500);
+  --color-text-muted:   var(--color-stone-600);
   --color-text-inverse: #ffffff;
 
-  // --- Typographie : familles ---
+  // --- Typographie ---
   --font-display: 'Playfair Display', Georgia, serif;
   --font-body:    'Source Sans 3', system-ui, sans-serif;
   --font-mono:    'JetBrains Mono', monospace;
 
-  // --- Typographie : échelle (modular scale ×1.25) ---
+  // Échelle ×1.25
   --text-xs:   0.64rem;
   --text-sm:   0.8rem;
   --text-base: 1rem;
@@ -72,13 +73,11 @@ $bp-xl:  1280px;
   --text-3xl:  2.441rem;
   --text-4xl:  3.052rem;
 
-  // --- Typographie : poids ---
   --weight-normal:   400;
   --weight-medium:   500;
   --weight-semibold: 600;
   --weight-bold:     700;
 
-  // --- Typographie : hauteurs de ligne ---
   --leading-tight:  1.2;
   --leading-snug:   1.4;
   --leading-normal: 1.6;
@@ -98,20 +97,22 @@ $bp-xl:  1280px;
   --space-20: 5rem;
   --space-24: 6rem;
 
-  // --- Bordures & rayons ---
-  --radius-sm:   4px;
-  --radius-md:   8px;
-  --radius-lg:   16px;
-  --radius-xl:   24px;
+  // --- Rayons — beaucoup plus généreux ---
+  --radius-sm:   6px;
+  --radius-md:   12px;
+  --radius-lg:   20px;
+  --radius-xl:   28px;
+  --radius-2xl:  36px;
   --radius-full: 9999px;
   --border-width: 1px;
   --border-color: var(--color-border);
 
-  // --- Ombres ---
-  --shadow-sm: 0 1px 3px rgba(26, 23, 20, 0.08);
-  --shadow-md: 0 4px 12px rgba(26, 23, 20, 0.12);
-  --shadow-lg: 0 8px 32px rgba(26, 23, 20, 0.16);
-  --shadow-xl: 0 16px 48px rgba(26, 23, 20, 0.20);
+  // --- Ombres — plus douces, légèrement teintées vert ---
+  --shadow-xs: 0 1px 2px rgba(20, 60, 20, 0.05);
+  --shadow-sm: 0 2px 8px rgba(20, 60, 20, 0.07);
+  --shadow-md: 0 6px 20px rgba(20, 60, 20, 0.10);
+  --shadow-lg: 0 12px 40px rgba(20, 60, 20, 0.13);
+  --shadow-xl: 0 24px 64px rgba(20, 60, 20, 0.17);
 
   // --- Transitions ---
   --transition-fast:   150ms ease;
@@ -127,4 +128,7 @@ $bp-xl:  1280px;
   --z-sticky:   200;
   --z-modal:    300;
   --z-toast:    400;
+
+  // --- Bottom nav height (utilisé pour le padding) ---
+  --bottom-nav-height: 72px;
 }
