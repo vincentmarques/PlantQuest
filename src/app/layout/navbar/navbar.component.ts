@@ -38,7 +38,9 @@ const NAV_ITEMS: NavItem[] = [
               class="navbar__link"
               [routerLink]="item.path"
               routerLinkActive="navbar__link--active"
+              #rlaD="routerLinkActive"
               [attr.aria-label]="item.label"
+              [attr.aria-current]="rlaD.isActive ? 'page' : null"
             >
               <span aria-hidden="true">{{ item.icon }}</span>
               <span class="navbar__link-label">{{ item.label }}</span>
@@ -74,6 +76,8 @@ const NAV_ITEMS: NavItem[] = [
               class="navbar__mobile-link"
               [routerLink]="item.path"
               routerLinkActive="navbar__mobile-link--active"
+              #rlaM="routerLinkActive"
+              [attr.aria-current]="rlaM.isActive ? 'page' : null"
               (click)="closeMenu()"
             >
               <span aria-hidden="true">{{ item.icon }}</span>

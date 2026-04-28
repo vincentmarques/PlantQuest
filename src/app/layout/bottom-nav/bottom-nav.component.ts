@@ -27,7 +27,9 @@ const NAV_ITEMS: NavItem[] = [
           class="bottom-nav__item"
           [routerLink]="item.path"
           routerLinkActive="bottom-nav__item--active"
+          #rla="routerLinkActive"
           [attr.aria-label]="item.label"
+          [attr.aria-current]="rla.isActive ? 'page' : null"
         >
           <span class="bottom-nav__icon" aria-hidden="true">{{ item.icon }}</span>
           <span class="bottom-nav__label">{{ item.label }}</span>

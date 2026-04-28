@@ -4,12 +4,13 @@ import { TopHeaderComponent } from './top-header/top-header.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { BottomNavComponent } from './bottom-nav/bottom-nav.component';
 import { NotificationToastComponent } from '../shared/components/notification-toast/notification-toast.component';
+import { OfflineBannerComponent } from '../shared/components/offline-banner/offline-banner.component';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet, TopHeaderComponent, NavbarComponent, BottomNavComponent, NotificationToastComponent],
+  imports: [RouterOutlet, TopHeaderComponent, NavbarComponent, BottomNavComponent, NotificationToastComponent, OfflineBannerComponent],
   template: `
     <!-- Top header mobile -->
     <app-top-header class="layout__top-mobile" />
@@ -17,7 +18,7 @@ import { NotificationToastComponent } from '../shared/components/notification-to
     <!-- Navbar desktop -->
     <app-navbar class="layout__nav-desktop" />
 
-    <main class="layout__main">
+    <main id="main-content" class="layout__main" role="main" tabindex="-1">
       <router-outlet />
     </main>
 
@@ -25,6 +26,7 @@ import { NotificationToastComponent } from '../shared/components/notification-to
     <app-bottom-nav />
 
     <app-notification-toast />
+    <app-offline-banner />
   `,
   styles: [`
     :host {

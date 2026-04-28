@@ -284,8 +284,8 @@ Notes: BadgeService (12 badges, checkProgressBadges). ChallengeService (7 défis
 **Livrables** : Collection persistante, filtrable, avec notes.
 
 ```
-STATUS: [ ] À FAIRE
-Notes: 
+STATUS: [x] TERMINÉ
+Notes: PlantCardComponent (vignette photo/placeholder, étoiles de maîtrise 0-5, badges famille/comestible/toxique, actions note+supprimer au hover). PlantNoteComponent (textarea 500 chars, signal). CollectionComponent refondé : vue grille/liste, recherche full-text, filtre famille, filtre maîtrise, tri (date desc/asc, nom, maîtrise), modal note inline, empty state filtré. Maîtrise branchée depuis QuizComponent.finalizeQuiz() : bonne réponse sur une plante en collection → masteryLevel +1 (plafonné à 5). Build : 0 erreur, chunk collection-component 45 kB.
 ```
 
 ---
@@ -311,8 +311,8 @@ Notes:
 **Livrables** : Dashboard avec données réelles issues des services.
 
 ```
-STATUS: [ ] À FAIRE
-Notes: 
+STATUS: [x] TERMINÉ
+Notes: UserProgress étendu avec activeDays[] (30 jours glissants, ISO YYYY-MM-DD). UserProgressService : spread DEFAULT_PROGRESS pour migration douce des données existantes, updateStreak() pousse la date du jour dans activeDays. Widgets : StreakWidgetComponent (calendrier 7 jours + dots verts), BadgesWidgetComponent (jauge progression + derniers badges), NextChallengeWidgetComponent (premier défi available), ReviewWidgetComponent (plantes mastery<3 triées). DashboardComponent refondé : hero card gradient vert avec message de motivation contextuel (5 niveaux × 2 msgs), niveau + barre progression, actions rapides 2×2/4×1, grille 4 widgets, stats CSS (barres difficulté + activité). Build : 0 erreur, chunk dashboard-component 24 kB.
 ```
 
 ---
@@ -333,8 +333,8 @@ Notes:
 **Livrables** : App installable sur mobile, score Lighthouse ≥ 85.
 
 ```
-STATUS: [ ] À FAIRE
-Notes: 
+STATUS: [x] TERMINÉ
+Notes: manifest.webmanifest enrichi (name, short_name, description, theme_color #3aaa42, background_color, lang, categories). UserProgress étendu (onboardingCompleted, preferredDifficulty). UserProgressService : completeOnboarding(difficulty). OnboardingComponent refondé en wizard 3 étapes : intro (features list), niveau (3 cards radio BEM), quiz calibration (3 questions rapides, feedback 900ms, score → points bonus). Guard onboardingGuard (CanActivateFn) branché sur le shell route. Accessibilité : .skip-link en CSS (visible au focus clavier), role=main + id=main-content sur <main>, aria-current="page" via #rla sur tous les routerLinkActive (bottom-nav, navbar desktop, navbar mobile). OfflineBannerComponent (window online/offline events, signal, role=alert, animation). 404 refondé avec animation 🍂, code 404, 2 CTAs. Build : 0 erreur, onboarding-component 13 kB.
 ```
 
 ---
@@ -469,13 +469,13 @@ Notes:
 | 5 | Identification par photo | [x] |
 | 6 | Quiz | [x] |
 | 7 | Défis | [x] |
-| 8 | Collection / Herbier | [ ] |
-| 9 | Dashboard & Progression | [ ] |
-| 10 | Onboarding & UX Finale | [ ] |
+| 8 | Collection / Herbier | [x] |
+| 9 | Dashboard & Progression | [x] |
+| 10 | Onboarding & UX Finale | [x] |
 | 11 | Tests & Qualité | [ ] |
 | 12 | Déploiement Netlify | [ ] |
 | — | Données JSON de référence | [ ] |
 
 ---
 
-*Dernière mise à jour : 2026-04-28 (session 2) | IA ayant travaillé en dernier : Claude Sonnet 4.6*
+*Dernière mise à jour : 2026-04-28 (session 5) | IA ayant travaillé en dernier : Claude Sonnet 4.6*

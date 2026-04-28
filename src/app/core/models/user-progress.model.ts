@@ -3,10 +3,13 @@ export interface UserProgress {
   plantsLearned: string[];
   streak: number;
   lastActiveDate: string | null;
+  activeDays: string[];
   quizzesCompleted: number;
   challengesCompleted: number;
   badges: string[];
   level: UserLevel;
+  onboardingCompleted: boolean;
+  preferredDifficulty: 'beginner' | 'intermediate' | 'expert';
 }
 
 export type UserLevel = 'seed' | 'sprout' | 'shrub' | 'tree' | 'forest';
@@ -32,8 +35,11 @@ export const DEFAULT_PROGRESS: UserProgress = {
   plantsLearned: [],
   streak: 0,
   lastActiveDate: null,
+  activeDays: [],
   quizzesCompleted: 0,
   challengesCompleted: 0,
   badges: [],
   level: 'seed',
+  onboardingCompleted: false,
+  preferredDifficulty: 'beginner',
 };

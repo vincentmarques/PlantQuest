@@ -13,17 +13,21 @@ const STORAGE_KEY = 'pq_user_progress';
 export class UserProgressService {
   private readonly storage = inject(StorageService);
 
-  private readonly _progress = signal<UserProgress>(
-    this.storage.get<UserProgress>(STORAGE_KEY) ?? { ...DEFAULT_PROGRESS }
-  );
+  private readonly _progress = signal<UserProgress>({
+    ...DEFAULT_PROGRESS,
+    ...(this.storage.get<UserProgress>(STORAGE_KEY) ?? {}),
+  });
 
   readonly progress = this._progress.asReadonly();
   readonly score = computed(() => this._progress().score);
   readonly plantsLearned = computed(() => this._progress().plantsLearned);
   readonly streak = computed(() => this._progress().streak);
+  readonly activeDays = computed(() => this._progress().activeDays);
   readonly badges = computed(() => this._progress().badges);
   readonly level = computed(() => this._progress().level);
   readonly plantsLearnedCount = computed(() => this._progress().plantsLearned.length);
+  readonly onboardingCompleted = computed(() => this._progress().onboardingCompleted);
+  readonly preferredDifficulty = computed(() => this._progress().preferredDifficulty);
 
   constructor() {
     effect(() => {
@@ -59,17 +63,22 @@ export class UserProgressService {
     });
   }
 
+  completeOnboarding(difficulty: 'beginner' | 'intermediate' | 'expert'): void {
+    this._progress.update(p => ({ ...p, onboardingCompleted: true, preferredDifficulty: difficulty }));
+  }
+
   reset(): void {
     this._progress.set({ ...DEFAULT_PROGRESS });
   }
 
   private updateStreak(): void {
-    const today = new Date().toDateString();
+    const today = new Date().toISOString().split('T')[0];
     this._progress.update(p => {
       if (p.lastActiveDate === today) return p;
-      const yesterday = new Date(Date.now() - 86400000).toDateString();
+      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
       const streak = p.lastActiveDate === yesterday ? p.streak + 1 : 1;
-      return { ...p, streak, lastActiveDate: today };
+      const activeDays = [...new Set([...(p.activeDays ?? []), today])].slice(-30);
+      return { ...p, streak, lastActiveDate: today, activeDays };
     });
   }
 

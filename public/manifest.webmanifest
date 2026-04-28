@@ -1,9 +1,15 @@
 {
-  "name": "plantquest",
-  "short_name": "plantquest",
+  "name": "PlantQuest — Apprenez les plantes",
+  "short_name": "PlantQuest",
+  "description": "Identifiez les plantes par photo, réalisez des quiz et des défis pour apprendre à reconnaître la flore.",
   "display": "standalone",
-  "scope": "./",
-  "start_url": "./",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "start_url": "/",
+  "theme_color": "#3aaa42",
+  "background_color": "#f4f7f4",
+  "lang": "fr",
+  "categories": ["education", "lifestyle"],
   "icons": [
     {
       "src": "icons/icon-72x72.png",

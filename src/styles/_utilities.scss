@@ -11,6 +11,29 @@
   border-width: 0;
 }
 
+// Skip link — visible uniquement au focus clavier
+.skip-link {
+  position: fixed;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: 9999;
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--color-green-600);
+  color: #fff;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+  transform: translateY(-120%);
+  transition: transform var(--transition-fast);
+
+  &:focus {
+    transform: translateY(0);
+    outline: 3px solid var(--color-earth-300);
+    outline-offset: 2px;
+  }
+}
+
 .hidden { display: none !important; }
 
 // Texte

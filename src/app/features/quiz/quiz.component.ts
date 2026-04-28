@@ -9,6 +9,7 @@ import {
 import { Router } from '@angular/router';
 import { QuizService } from '../../core/services/quiz.service';
 import { UserProgressService } from '../../core/services/user-progress.service';
+import { CollectionService } from '../../core/services/collection.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { QuizSession, QuizResult, Difficulty } from '../../core/models/quiz.model';
 import { Plant } from '../../core/models/plant.model';
@@ -78,6 +79,7 @@ export class QuizComponent {
 
   private readonly quizService = inject(QuizService);
   private readonly progressService = inject(UserProgressService);
+  private readonly collectionService = inject(CollectionService);
   private readonly notifications = inject(NotificationService);
   readonly router = inject(Router);
 
@@ -163,7 +165,13 @@ export class QuizComponent {
     this.progressService.incrementQuizzesCompleted();
     result.session.questions
       .filter(q => completed.answers[q.id] === q.correctOptionId)
-      .forEach(q => this.progressService.markPlantLearned(q.plantId));
+      .forEach(q => {
+        this.progressService.markPlantLearned(q.plantId);
+        const entry = this.collectionService.getEntry(q.plantId);
+        if (entry) {
+          this.collectionService.updateMastery(q.plantId, entry.masteryLevel + 1);
+        }
+      });
 
     if (result.percentage === 100) {
       this.progressService.unlockBadge('quiz-perfect');

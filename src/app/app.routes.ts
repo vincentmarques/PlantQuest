@@ -1,17 +1,20 @@
 import { Routes } from '@angular/router';
+import { onboardingGuard } from './core/guards/onboarding.guard';
 
 export const routes: Routes = [
-  // Onboarding — sans shell
+  // Onboarding — sans shell, accessible sans guard
   {
     path: 'onboarding',
     loadComponent: () =>
       import('./features/onboarding/onboarding.component').then(m => m.OnboardingComponent),
+    title: 'Bienvenue — PlantQuest',
   },
   // Shell principal avec lazy loading par feature
   {
     path: '',
     loadComponent: () =>
       import('./layout/layout.component').then(m => m.LayoutComponent),
+    canActivate: [onboardingGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
