@@ -152,8 +152,8 @@ Notes: src/styles/ créé avec _tokens.scss (couleurs, typo, espacement, ombres,
 **Livrables** : Shell navigable, toutes les routes répondent (même avec pages vides).
 
 ```
-STATUS: [ ] À FAIRE
-Notes: 
+STATUS: [x] TERMINÉ
+Notes: LayoutComponent + NavbarComponent (responsive mobile/desktop, sticky, score/niveau). Routing lazy loading avec withViewTransitions(). Shared: Card, Badge, Loader, EmptyState, NotificationToast. Feature stubs : dashboard, identify, quiz, challenge, collection, onboarding, 404. Build : 11 lazy chunks, 0 erreur.
 ```
 
 ---
@@ -180,8 +180,8 @@ Notes:
 **Livrables** : Services testés unitairement (au moins les cas nominaux).
 
 ```
-STATUS: [ ] À FAIRE
-Notes: 
+STATUS: [x] TERMINÉ
+Notes: StorageService, UserProgressService (signals + streak + niveaux), CollectionService (CRUD localStorage), NotificationService (toasts auto-dismiss), PlantApiService (Plant.id + iNaturalist, cache, retry, Zod), apiInterceptor (erreurs HTTP globales). Modèles Zod : Plant, CollectionEntry, UserProgress, QuizSession, Challenge.
 ```
 
 ---
@@ -464,8 +464,8 @@ Notes:
 |---|---|---|
 | 1 | Initialisation & configuration | [x] |
 | 2 | Design System SCSS maison | [x] |
-| 3 | Layout & Shell | [ ] |
-| 4 | Core Services | [ ] |
+| 3 | Layout & Shell | [x] |
+| 4 | Core Services | [x] |
 | 5 | Identification par photo | [ ] |
 | 6 | Quiz | [ ] |
 | 7 | Défis | [ ] |
@@ -478,4 +478,4 @@ Notes:
 
 ---
 
-*Dernière mise à jour : 2026-04-28 | IA ayant travaillé en dernier : Claude Sonnet 4.6*
+*Dernière mise à jour : 2026-04-28 (session 2) | IA ayant travaillé en dernier : Claude Sonnet 4.6*
