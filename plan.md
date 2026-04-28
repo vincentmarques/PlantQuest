@@ -210,8 +210,8 @@ Notes: StorageService, UserProgressService (signals + streak + niveaux), Collect
 **Livrables** : Identification fonctionnelle end-to-end avec une vraie photo.
 
 ```
-STATUS: [ ] À FAIRE
-Notes: 
+STATUS: [x] TERMINÉ
+Notes: ImageUploaderComponent (drag&drop, caméra getUserMedia, validation). IdentificationResultComponent (progress-bar confiance, badges, plantes similaires). PlantDetailComponent (fiche complète). IdentifyComponent : machine à états, animation scan CSS (ligne lumineuse animée sur l'image). Mode démo automatique si pas de clé API. image.utils.ts compression canvas. plants.json 20 plantes fallback.
 ```
 
 ---
@@ -466,7 +466,7 @@ Notes:
 | 2 | Design System SCSS maison | [x] |
 | 3 | Layout & Shell | [x] |
 | 4 | Core Services | [x] |
-| 5 | Identification par photo | [ ] |
+| 5 | Identification par photo | [x] |
 | 6 | Quiz | [ ] |
 | 7 | Défis | [ ] |
 | 8 | Collection / Herbier | [ ] |
