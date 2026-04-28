@@ -1,0 +1,67 @@
+# =============================================
+# PlantQuest — Configuration Netlify
+# =============================================
+
+# --- Build ---
+[build]
+  command = "ng build --configuration production"
+  publish = "dist/plantquest/browser"
+
+# --- Variables d'environnement (valeurs de build uniquement) ---
+# Les secrets de production sont définis dans le dashboard Netlify
+[build.environment]
+  NODE_VERSION = "22"
+  NPM_FLAGS    = "--legacy-peer-deps"
+
+# --- Contextes de déploiement ---
+[context.production]
+  command = "ng build --configuration production"
+
+[context.deploy-preview]
+  command = "ng build --configuration production"
+
+[context.branch-deploy]
+  command = "ng build --configuration production"
+
+# --- Fonctions Netlify (proxy API) ---
+[functions]
+  directory = "netlify/functions"
+
+# --- Redirections SPA ---
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
+
+# --- Headers de sécurité ---
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options            = "DENY"
+    X-Content-Type-Options     = "nosniff"
+    Strict-Transport-Security  = "max-age=31536000; includeSubDomains; preload"
+    Referrer-Policy            = "strict-origin-when-cross-origin"
+    Permissions-Policy         = "camera=(self), geolocation=(self), microphone=()"
+    Content-Security-Policy    = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://api.plant.id https://api.inaturalist.org; frame-ancestors 'none';"
+
+# --- Cache assets statiques (Angular hash les noms de fichiers) ---
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# --- Pas de cache sur index.html ---
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

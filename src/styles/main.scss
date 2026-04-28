@@ -1,0 +1,9 @@
+// Point d'entrée du Design System PlantQuest
+// Ordre d'import critique : tokens → reset → typography → layout → components → utilities
+
+@use 'tokens';
+@use 'reset';
+@use 'typography';
+@use 'layout';
+@use 'components';
+@use 'utilities';

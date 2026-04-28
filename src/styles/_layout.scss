@@ -1,0 +1,55 @@
+@use 'tokens' as *;
+
+// ============================================================
+// Conteneur
+// ============================================================
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+
+  @include respond-to('md') { padding-inline: var(--space-6); }
+  @include respond-to('lg') { padding-inline: var(--space-8); }
+}
+
+.container--narrow { max-width: 720px; }
+.container--wide   { max-width: 1440px; }
+
+// ============================================================
+// Grille
+// ============================================================
+.grid {
+  display: grid;
+  gap: var(--space-6);
+
+  // Sur mobile : toujours 1 colonne
+  grid-template-columns: 1fr;
+
+  @include respond-to('md') {
+    &--2   { grid-template-columns: repeat(2, 1fr); }
+    &--3   { grid-template-columns: repeat(3, 1fr); }
+    &--4   { grid-template-columns: repeat(4, 1fr); }
+    &--auto { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+  }
+}
+
+// ============================================================
+// Stack — espacement vertical uniforme
+// ============================================================
+.stack > * + * { margin-top: var(--stack-gap, var(--space-4)); }
+
+.stack--sm { --stack-gap: var(--space-2); }
+.stack--lg { --stack-gap: var(--space-8); }
+
+// ============================================================
+// Flex helpers
+// ============================================================
+.flex          { display: flex; }
+.flex--center  { align-items: center; justify-content: center; }
+.flex--between { align-items: center; justify-content: space-between; }
+.flex--column  { flex-direction: column; }
+.flex--wrap    { flex-wrap: wrap; }
+.flex--gap-sm  { gap: var(--space-2); }
+.flex--gap-md  { gap: var(--space-4); }
+.flex--gap-lg  { gap: var(--space-6); }

@@ -1,0 +1,36 @@
+// Accessibilité
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.hidden { display: none !important; }
+
+// Texte
+.text-center { text-align: center; }
+.text-right  { text-align: right; }
+.text-muted  { color: var(--color-text-muted); }
+.text-small  { font-size: var(--text-sm); }
+.text-inverse { color: var(--color-text-inverse); }
+
+// Marges auto
+.mt-auto { margin-top: auto; }
+.ml-auto { margin-left: auto; }
+.mx-auto { margin-inline: auto; }
+
+// Troncature
+.truncate {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// Largeur
+.w-full { width: 100%; }
