@@ -68,8 +68,8 @@ src/
 **Livrables** : Projet qui compile sans erreur, `ng serve` fonctionnel.
 
 ```
-STATUS: [ ] À FAIRE
-Notes: 
+STATUS: [x] TERMINÉ
+Notes: Angular 19, Node 22. ESLint (angular-eslint), PWA, Zod installés. Environnements dev/prod créés. angular.json configuré (assets, _redirects, fileReplacements prod). netlify.toml créé. Git initialisé (branche master).
 ```
 
 ---
@@ -127,8 +127,8 @@ Notes:
 **Livrables** : Design System compilable, aperçu visuel des composants CSS fonctionnel.
 
 ```
-STATUS: [ ] À FAIRE
-Notes: 
+STATUS: [x] TERMINÉ
+Notes: src/styles/ créé avec _tokens.scss (couleurs, typo, espacement, ombres, transitions, z-index, mixin respond-to), _reset.scss, _typography.scss, _layout.scss (.container, .grid, .stack, .flex), _components.scss (.btn, .card, .badge, .input/.textarea/.select, .alert, .progress-bar, .loader, .tag, .avatar), _utilities.scss. main.scss comme point d'entrée. Référencé dans angular.json. Build vérifié : 14kB CSS, 0 erreur.
 ```
 
 ---
@@ -462,8 +462,8 @@ Notes:
 
 | Étape | Titre | Statut |
 |---|---|---|
-| 1 | Initialisation & configuration | [ ] |
-| 2 | Design System SCSS maison | [ ] |
+| 1 | Initialisation & configuration | [x] |
+| 2 | Design System SCSS maison | [x] |
 | 3 | Layout & Shell | [ ] |
 | 4 | Core Services | [ ] |
 | 5 | Identification par photo | [ ] |
@@ -478,4 +478,4 @@ Notes:
 
 ---
 
-*Dernière mise à jour : — | IA ayant travaillé en dernier : —*
+*Dernière mise à jour : 2026-04-28 | IA ayant travaillé en dernier : Claude Sonnet 4.6*
