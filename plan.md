@@ -237,8 +237,8 @@ Notes: ImageUploaderComponent (drag&drop, caméra getUserMedia, validation). Ide
 **Livrables** : Un quiz de 10 questions jouable de bout en bout.
 
 ```
-STATUS: [ ] À FAIRE
-Notes: 
+STATUS: [x] TERMINÉ
+Notes: QuizService (4 types : description, vrai/faux, famille, habitat — shuffle Fisher-Yates). QuizSetupComponent (3 niveaux). QuestionComponent (feedback card--correct/wrong/missed, indice contextuel, barre progression). QuizResultComponent (étoiles, score, plantes à retravailler). QuizComponent machine à états avec délai 1.8s. +5pts/bonne réponse, badge quiz-perfect.
 ```
 
 ---
@@ -467,7 +467,7 @@ Notes:
 | 3 | Layout & Shell | [x] |
 | 4 | Core Services | [x] |
 | 5 | Identification par photo | [x] |
-| 6 | Quiz | [ ] |
+| 6 | Quiz | [x] |
 | 7 | Défis | [ ] |
 | 8 | Collection / Herbier | [ ] |
 | 9 | Dashboard & Progression | [ ] |
