@@ -173,7 +173,7 @@ const FEATURES = [
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(160deg, var(--color-green-50) 0%, var(--color-green-100) 100%);
+      background: linear-gradient(160deg, var(--color-primary-50) 0%, var(--color-primary-100) 100%);
       padding: var(--space-6) var(--space-4);
     }
 
@@ -203,7 +203,7 @@ const FEATURES = [
       transition: background-color var(--transition-base), transform var(--transition-base);
 
       &--active {
-        background-color: var(--color-green-500);
+        background-color: var(--color-primary-500);
         transform: scale(1.3);
       }
     }
@@ -230,7 +230,7 @@ const FEATURES = [
     }
 
     .onboarding__brand {
-      color: var(--color-green-600);
+      color: var(--color-primary-600);
       font-family: var(--font-display);
     }
 
@@ -304,12 +304,12 @@ const FEATURES = [
       transition: border-color var(--transition-fast), background-color var(--transition-fast);
       width: 100%;
 
-      &:hover { border-color: var(--color-green-300); background-color: var(--color-green-50); }
-      &:focus-visible { outline: 2px solid var(--color-green-500); outline-offset: 2px; }
+      &:hover { border-color: var(--color-primary-300); background-color: var(--color-primary-50); }
+      &:focus-visible { outline: 2px solid var(--color-primary-500); outline-offset: 2px; }
 
       &--selected {
-        border-color: var(--color-green-500);
-        background-color: var(--color-green-50);
+        border-color: var(--color-primary-500);
+        background-color: var(--color-primary-50);
       }
     }
 
@@ -332,7 +332,7 @@ const FEATURES = [
     }
 
     .level-card__check {
-      color: var(--color-green-500);
+      color: var(--color-primary-500);
       font-weight: var(--weight-bold);
       font-size: var(--text-lg);
       min-width: 20px;
@@ -349,7 +349,7 @@ const FEATURES = [
 
     .calib-progress__fill {
       height: 100%;
-      background-color: var(--color-green-500);
+      background-color: var(--color-primary-500);
       border-radius: var(--radius-full);
       transition: width 0.4s ease;
     }
@@ -381,14 +381,14 @@ const FEATURES = [
       cursor: pointer;
       transition: border-color var(--transition-fast), background-color var(--transition-fast);
 
-      &:hover:not(:disabled) { border-color: var(--color-green-400); background-color: var(--color-green-50); }
-      &:focus-visible { outline: 2px solid var(--color-green-500); outline-offset: 2px; }
+      &:hover:not(:disabled) { border-color: var(--color-primary-400); background-color: var(--color-primary-50); }
+      &:focus-visible { outline: 2px solid var(--color-primary-500); outline-offset: 2px; }
       &:disabled { cursor: default; }
 
       &--correct {
-        border-color: var(--color-green-500);
-        background-color: var(--color-green-50);
-        color: var(--color-green-700);
+        border-color: var(--color-primary-500);
+        background-color: var(--color-primary-50);
+        color: var(--color-primary-700);
         font-weight: var(--weight-semibold);
       }
 
@@ -405,7 +405,7 @@ const FEATURES = [
       align-items: center;
       gap: var(--space-3);
       padding: var(--space-6);
-      background-color: var(--color-green-50);
+      background-color: var(--color-primary-50);
       border-radius: var(--radius-xl);
       text-align: center;
     }

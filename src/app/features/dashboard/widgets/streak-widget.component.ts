@@ -91,8 +91,8 @@ import { Component, input, computed, ChangeDetectionStrategy } from '@angular/co
       transition: background-color var(--transition-fast);
 
       .streak-cal__day--active & {
-        background-color: var(--color-green-500);
-        border-color: var(--color-green-500);
+        background-color: var(--color-primary-500);
+        border-color: var(--color-primary-500);
         box-shadow: 0 2px 8px rgba(58, 170, 66, 0.4);
       }
     }

@@ -127,7 +127,7 @@ import { BadgeDefinition } from '../../../core/services/badge.service';
 
     .challenge-result__headline {
       font-size: var(--text-2xl);
-      color: var(--color-green-700);
+      color: var(--color-primary-700);
     }
 
     .challenge-result__stats {
@@ -148,7 +148,7 @@ import { BadgeDefinition } from '../../../core/services/badge.service';
       font-family: var(--font-display);
       font-size: var(--text-3xl);
       font-weight: var(--weight-bold);
-      color: var(--color-green-600);
+      color: var(--color-primary-600);
     }
 
     .challenge-result__points {

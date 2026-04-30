@@ -162,7 +162,7 @@ const MOTIVATION: Record<UserLevel, string[]> = {
       display: flex;
       flex-direction: column;
       gap: var(--space-6);
-      background: linear-gradient(135deg, var(--color-green-600), var(--color-green-500));
+      background: linear-gradient(135deg, var(--color-primary-600), var(--color-primary-500));
       color: #fff;
       min-height: 200px;
 
@@ -273,7 +273,7 @@ const MOTIVATION: Record<UserLevel, string[]> = {
       &:active { transform: translateY(0); }
 
       &--accent {
-        background: linear-gradient(135deg, var(--color-green-500), var(--color-green-600));
+        background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
         border-color: transparent;
         box-shadow: 0 6px 20px rgba(58, 170, 66, 0.35);
 
@@ -340,7 +340,7 @@ const MOTIVATION: Record<UserLevel, string[]> = {
       height: 100%;
       border-radius: var(--radius-full);
       transition: width 0.6s ease;
-      background-color: var(--color-green-400);
+      background-color: var(--color-primary-400);
 
       &--medium { background-color: var(--color-earth-400); }
       &--hard   { background-color: var(--color-error); }
