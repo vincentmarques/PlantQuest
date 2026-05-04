@@ -23,8 +23,10 @@ export const PLANT_CATEGORY_MAP: Record<string, PlantCategory> = {
   'conium-maculatum':     'fleurs-herbes',
 };
 
-export function getPlantCategory(plantId: string): PlantCategory {
-  return PLANT_CATEGORY_MAP[plantId] ?? 'fleurs-herbes';
+export function getPlantCategory(plantId: string, tags?: string[]): PlantCategory {
+  if (PLANT_CATEGORY_MAP[plantId]) return PLANT_CATEGORY_MAP[plantId];
+  const tagCategory = tags?.find(t => t === 'arbres' || t === 'fleurs-herbes' || t === 'potager');
+  return (tagCategory as PlantCategory) ?? 'fleurs-herbes';
 }
 
 export interface CategoryConfig {

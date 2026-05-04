@@ -3,16 +3,16 @@ import { RouterLink } from '@angular/router';
 
 interface HomeAction {
   path: string;
-  icon: string;
+  faIcon: string;
   label: string;
   sub: string;
   modifier: string;
 }
 
 const ACTIONS: HomeAction[] = [
-  { path: '/quiz',       icon: '❓', label: 'Quiz',    sub: 'Tester ses bases',         modifier: 'dark'  },
-  { path: '/collection', icon: '🌱', label: 'Herbier', sub: 'Collection de plante',     modifier: 'lime'  },
-  { path: '/challenge',  icon: '🏆', label: 'Trophée', sub: 'Retrouver vos trophées',   modifier: 'blue'  },
+  { path: '/quiz',       faIcon: 'fa-circle-question', label: 'Quiz',    sub: 'Tester ses bases',       modifier: 'dark' },
+  { path: '/collection', faIcon: 'fa-seedling',        label: 'Herbier', sub: 'Collection de plante',   modifier: 'lime' },
+  { path: '/challenge',  faIcon: 'fa-trophy',          label: 'Trophée', sub: 'Retrouvez vos trophées', modifier: 'blue' },
 ];
 
 @Component({
@@ -32,7 +32,7 @@ const ACTIONS: HomeAction[] = [
         <nav class="home__actions" aria-label="Sections principales">
           @for (action of actions; track action.path) {
             <a [routerLink]="action.path" class="home-card home-card--{{ action.modifier }}">
-              <span class="home-card__icon" aria-hidden="true">{{ action.icon }}</span>
+              <i class="fa-solid {{ action.faIcon }} home-card__icon" aria-hidden="true"></i>
               <span class="home-card__label">{{ action.label }}</span>
               <span class="home-card__sub">{{ action.sub }}</span>
             </a>
@@ -49,7 +49,7 @@ const ACTIONS: HomeAction[] = [
   `,
   styles: [`
     .home {
-      min-height: calc(100vh - var(--bottom-nav-height));
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -62,13 +62,12 @@ const ACTIONS: HomeAction[] = [
       gap: var(--space-6);
     }
 
-    // ----- Header -----
     .home__header {
       display: flex;
       flex-direction: column;
-      gap: var(--space-2);
+      gap: var(--space-4);
       text-align: center;
-      padding-top: var(--space-4);
+      padding-top: var(--space-8);
     }
 
     .home__title {
@@ -82,11 +81,10 @@ const ACTIONS: HomeAction[] = [
 
     .home__subtitle {
       font-size: var(--text-sm);
-      color: var(--color-stone-600);
+      color: var(--color-ink);
       margin: 0;
     }
 
-    // ----- Action cards -----
     .home__actions {
       display: flex;
       flex-direction: column;
@@ -98,8 +96,8 @@ const ACTIONS: HomeAction[] = [
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: var(--space-4);
-      padding: var(--space-8) var(--space-6);
+      gap: var(--space-6);
+      padding: var(--space-6);
       border-radius: var(--radius-xl);
       text-decoration: none;
       text-align: center;
@@ -110,23 +108,17 @@ const ACTIONS: HomeAction[] = [
 
       &--dark {
         background-color: var(--color-primary-900);
-        color: var(--color-text-inverse);
-
-        .home-card__sub { color: rgba(255,255,255,0.7); }
+        color: #ebfef5;
       }
 
       &--lime {
         background-color: var(--color-lime);
         color: var(--color-lime-text);
-
-        .home-card__sub { color: rgba(0,92,69,0.7); }
       }
 
       &--blue {
         background-color: var(--color-periwinkle);
         color: var(--color-primary-900);
-
-        .home-card__sub { color: rgba(1,90,61,0.7); }
       }
     }
 
@@ -144,22 +136,22 @@ const ACTIONS: HomeAction[] = [
 
     .home-card__sub {
       font-size: var(--text-xs);
+      opacity: 0.75;
+      margin-top: calc(-1 * var(--space-4));
     }
 
-    // ----- Footer -----
     .home__footer {
       display: flex;
       justify-content: center;
       gap: var(--space-2);
       font-size: var(--text-sm);
-      color: var(--color-stone-600);
+      color: var(--color-ink);
       padding: var(--space-4) 0 var(--space-2);
     }
 
     .home__footer-name {
       font-family: var(--font-display);
       font-weight: var(--weight-semibold);
-      color: var(--color-ink);
     }
   `],
 })

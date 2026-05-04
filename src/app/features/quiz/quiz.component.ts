@@ -14,12 +14,19 @@ import { NotificationService } from '../../core/services/notification.service';
 import { PlantCategory, CATEGORIES } from '../../core/models/plant-category.model';
 import { QuizSession, QuizResult, Difficulty } from '../../core/models/quiz.model';
 import { Plant } from '../../core/models/plant.model';
-import { QuizSetupComponent } from './quiz-setup/quiz-setup.component';
 import { QuestionComponent } from './question/question.component';
 import { QuizResultComponent } from './quiz-result/quiz-result.component';
 import { LoaderComponent } from '../../shared/components/loader/loader.component';
 
-type QuizState = 'category' | 'setup' | 'playing' | 'feedback' | 'result';
+type QuizState = 'setup' | 'playing' | 'feedback' | 'result';
+
+interface DifficultyOption { value: Difficulty; label: string; }
+
+const DIFFICULTIES: DifficultyOption[] = [
+  { value: 'beginner',     label: 'Facile'  },
+  { value: 'intermediate', label: 'Moyen'   },
+  { value: 'expert',       label: 'Difficile' },
+];
 
 const FEEDBACK_DELAY_MS = 1800;
 
@@ -27,92 +34,126 @@ const FEEDBACK_DELAY_MS = 1800;
   selector: 'app-quiz',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [QuizSetupComponent, QuestionComponent, QuizResultComponent, LoaderComponent],
+  imports: [QuestionComponent, QuizResultComponent, LoaderComponent],
   template: `
-    <div class="container quiz-page">
-      @switch (state()) {
+    @switch (state()) {
 
-        @case ('category') {
-          <div class="quiz-categories">
-            <header class="quiz-categories__header">
-              <h1 class="quiz-categories__title">Quiz</h1>
-              <p class="quiz-categories__sub">Choisissez une catégorie</p>
-            </header>
+      @case ('setup') {
+        <div class="quiz-setup">
+          <header class="quiz-setup__header">
+            <button class="quiz-setup__back" (click)="router.navigate(['/dashboard'])">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <h1 class="quiz-setup__title">Quiz</h1>
+          </header>
 
-            <div class="quiz-categories__list">
-              @for (cat of categories; track cat.key) {
-                <button class="cat-card cat-card--{{ cat.key }}" (click)="onSelectCategory(cat.key)">
-                  <span class="cat-card__icon" aria-hidden="true">{{ cat.icon }}</span>
-                  <span class="cat-card__label">{{ cat.label }}</span>
-                  <span class="cat-card__sub">{{ cat.sub }}</span>
-                </button>
+          <section class="quiz-setup__section">
+            <h2 class="quiz-setup__section-label">Niveau</h2>
+            <div class="toggle-group">
+              @for (d of difficulties; track d.value) {
+                <button
+                  class="toggle-btn"
+                  [class.toggle-btn--active]="selectedDifficulty() === d.value"
+                  (click)="selectedDifficulty.set(d.value)"
+                >{{ d.label }}</button>
               }
             </div>
+          </section>
+
+          <section class="quiz-setup__section">
+            <h2 class="quiz-setup__section-label">Catégories</h2>
+            <div class="toggle-group toggle-group--wrap">
+              <button
+                class="toggle-btn"
+                [class.toggle-btn--active]="selectedCategory() === null"
+                (click)="selectedCategory.set(null)"
+              >Toutes</button>
+              @for (cat of categories; track cat.key) {
+                <button
+                  class="toggle-btn"
+                  [class.toggle-btn--active]="selectedCategory() === cat.key"
+                  (click)="selectedCategory.set(cat.key)"
+                >{{ cat.label }}</button>
+              }
+            </div>
+          </section>
+
+          <div class="quiz-setup__footer">
+            <button
+              class="btn-start"
+              [disabled]="!selectedDifficulty()"
+              (click)="onStart()"
+            >Commencer</button>
           </div>
-        }
+        </div>
+      }
 
-        @case ('setup') {
-          <div class="quiz-setup-wrapper">
-            <button class="quiz-back-btn" (click)="state.set('category')">← Catégories</button>
-            <app-quiz-setup (started)="onStart($event)" />
-          </div>
-        }
-
-        @case ('playing') {
-          @if (currentQuestion()) {
-            <app-question
-              #questionRef
-              [question]="currentQuestion()!"
-              [index]="currentIndex()"
-              [total]="session()!.questions.length"
-              [plant]="currentPlant()"
-              [correctCount]="correctCount()"
-              (answered)="onAnswered($event)"
-            />
-          }
-        }
-
-        @case ('feedback') {
-          <div class="quiz-page__feedback flex flex--center flex--column" style="gap: var(--space-4); min-height: 200px;">
-            <app-loader size="lg" label="Question suivante…" />
-            <p class="text-muted">
-              {{ isLastQuestion() ? 'Calcul du score…' : 'Question suivante…' }}
-            </p>
-          </div>
-        }
-
-        @case ('result') {
-          <app-quiz-result
-            [result]="quizResult()!"
-            [wrongPlants]="wrongPlants()"
-            (retry)="onRestart()"
-            (goHome)="router.navigate(['/dashboard'])"
+      @case ('playing') {
+        @if (currentQuestion()) {
+          <app-question
+            #questionRef
+            [question]="currentQuestion()!"
+            [index]="currentIndex()"
+            [total]="session()!.questions.length"
+            [plant]="currentPlant()"
+            [correctCount]="correctCount()"
+            (answered)="onAnswered($event)"
+            (skip)="onSkip()"
+            (quit)="onQuit()"
           />
         }
-
       }
-    </div>
+
+      @case ('feedback') {
+        <div class="quiz-feedback">
+          <app-loader size="lg" />
+          <p>{{ isLastQuestion() ? 'Calcul du score…' : 'Question suivante…' }}</p>
+        </div>
+      }
+
+      @case ('result') {
+        <app-quiz-result
+          [result]="quizResult()!"
+          [wrongPlants]="wrongPlants()"
+          (retry)="onRestart()"
+          (goHome)="router.navigate(['/dashboard'])"
+        />
+      }
+
+    }
   `,
   styles: [`
-    .quiz-page { max-width: 680px; }
-    .quiz-page__feedback { padding: var(--space-16) 0; }
-
-    // ----- Category selection -----
-    .quiz-categories {
+    // ---------- Setup ----------
+    .quiz-setup {
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      gap: var(--space-6);
-      padding-top: var(--space-6);
+      padding: var(--space-4);
+      background: var(--color-bg);
     }
 
-    .quiz-categories__header {
-      text-align: center;
+    .quiz-setup__header {
       display: flex;
-      flex-direction: column;
-      gap: var(--space-2);
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: var(--space-4) 0 var(--space-6);
     }
 
-    .quiz-categories__title {
+    .quiz-setup__back {
+      position: absolute;
+      left: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: var(--text-lg);
+      color: var(--color-primary-900);
+      padding: var(--space-2);
+      border-radius: var(--radius-md);
+      &:hover { background: var(--color-surface-2); }
+    }
+
+    .quiz-setup__title {
       font-family: var(--font-display);
       font-size: var(--text-2xl);
       font-weight: var(--weight-bold);
@@ -120,76 +161,80 @@ const FEEDBACK_DELAY_MS = 1800;
       margin: 0;
     }
 
-    .quiz-categories__sub {
-      font-size: var(--text-sm);
-      color: var(--color-text-muted);
+    .quiz-setup__section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+    }
+
+    .quiz-setup__section-label {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      color: var(--color-primary-900);
       margin: 0;
     }
 
-    .quiz-categories__list {
+    .toggle-group {
       display: flex;
-      flex-direction: column;
-      gap: var(--space-4);
+      gap: var(--space-3);
+      &--wrap { flex-wrap: wrap; }
     }
 
-    .cat-card {
+    .toggle-btn {
+      padding: var(--space-2) var(--space-3);
+      border: 1.5px solid var(--color-primary-900);
+      border-radius: var(--radius-md);
+      background: transparent;
+      color: var(--color-primary-900);
+      font-size: var(--text-base);
+      cursor: pointer;
+      transition: background var(--transition-fast), color var(--transition-fast);
+      white-space: nowrap;
+
+      &--active {
+        background: var(--color-primary-900);
+        color: #ebfef5;
+      }
+
+      &:hover:not(.toggle-btn--active) {
+        background: var(--color-primary-100);
+      }
+    }
+
+    .quiz-setup__footer {
+      margin-top: auto;
+      padding-top: var(--space-8);
+    }
+
+    .btn-start {
+      width: 100%;
+      padding: var(--space-4);
+      border: none;
+      border-radius: var(--radius-xl);
+      background: var(--color-primary-900);
+      color: #ebfef5;
+      font-size: var(--text-lg);
+      font-family: var(--font-display);
+      font-weight: var(--weight-bold);
+      cursor: pointer;
+      transition: opacity var(--transition-fast), transform var(--transition-fast);
+
+      &:disabled { opacity: 0.4; cursor: not-allowed; }
+      &:not(:disabled):hover { opacity: 0.9; }
+      &:not(:disabled):active { transform: scale(0.98); }
+    }
+
+    // ---------- Feedback ----------
+    .quiz-feedback {
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: var(--space-3);
-      padding: var(--space-8) var(--space-6);
-      border-radius: var(--radius-xl);
-      border: none;
-      cursor: pointer;
-      text-align: center;
-      transition: transform var(--transition-base), box-shadow var(--transition-base);
-
-      &:hover  { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-      &:active { transform: scale(0.98); }
-
-      &--arbres {
-        background-color: var(--color-primary-900);
-        color: #fff;
-        .cat-card__sub { color: rgba(255,255,255,0.7); }
-      }
-
-      &--fleurs-herbes {
-        background-color: var(--color-lime);
-        color: var(--color-lime-text);
-        .cat-card__sub { color: rgba(0,92,69,0.7); }
-      }
-
-      &--potager {
-        background-color: var(--color-periwinkle);
-        color: var(--color-primary-900);
-        .cat-card__sub { color: rgba(1,90,61,0.7); }
-      }
-    }
-
-    .cat-card__icon  { font-size: 2rem; line-height: 1; }
-    .cat-card__label { font-family: var(--font-display); font-size: var(--text-lg); font-weight: var(--weight-bold); }
-    .cat-card__sub   { font-size: var(--text-xs); }
-
-    // ----- Back button -----
-    .quiz-back-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-2);
-      padding: var(--space-2) var(--space-4);
-      margin-bottom: var(--space-4);
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: var(--text-sm);
+      gap: var(--space-4);
       color: var(--color-text-muted);
-      border-radius: var(--radius-md);
-      transition: color var(--transition-fast), background var(--transition-fast);
-
-      &:hover { color: var(--color-primary-600); background-color: var(--color-surface-2); }
     }
-
-    .quiz-setup-wrapper { display: flex; flex-direction: column; }
   `],
 })
 export class QuizComponent {
@@ -202,9 +247,11 @@ export class QuizComponent {
   readonly router = inject(Router);
 
   readonly categories = CATEGORIES;
+  readonly difficulties = DIFFICULTIES;
 
-  readonly state = signal<QuizState>('category');
+  readonly state = signal<QuizState>('setup');
   readonly selectedCategory = signal<PlantCategory | null>(null);
+  readonly selectedDifficulty = signal<Difficulty | null>(null);
   readonly session = signal<QuizSession | null>(null);
   readonly currentIndex = signal(0);
   readonly correctCount = signal(0);
@@ -234,12 +281,9 @@ export class QuizComponent {
       .filter((p): p is Plant => !!p);
   });
 
-  onSelectCategory(category: PlantCategory): void {
-    this.selectedCategory.set(category);
-    this.state.set('setup');
-  }
-
-  onStart(difficulty: Difficulty): void {
+  onStart(): void {
+    const difficulty = this.selectedDifficulty();
+    if (!difficulty) return;
     const s = this.quizService.generateSession(difficulty, this.selectedCategory() ?? undefined);
     this.session.set(s);
     this.currentIndex.set(0);
@@ -261,7 +305,23 @@ export class QuizComponent {
     }
 
     this.state.set('feedback');
+    this.scheduleNext();
+  }
 
+  onSkip(): void {
+    this.state.set('feedback');
+    this.scheduleNext();
+  }
+
+  onQuit(): void {
+    this.session.set(null);
+    this.currentIndex.set(0);
+    this.correctCount.set(0);
+    this.selectedDifficulty.set(null);
+    this.state.set('setup');
+  }
+
+  private scheduleNext(): void {
     setTimeout(() => {
       const s = this.session()!;
       const nextIndex = this.currentIndex() + 1;
@@ -312,6 +372,7 @@ export class QuizComponent {
     this.quizResult.set(null);
     this.currentIndex.set(0);
     this.correctCount.set(0);
-    this.state.set('category');
+    this.selectedDifficulty.set(null);
+    this.state.set('setup');
   }
 }

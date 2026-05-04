@@ -6,7 +6,6 @@ import {
   computed,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { NgClass } from '@angular/common';
 import { QuizResult } from '../../../core/models/quiz.model';
 import { Plant } from '../../../core/models/plant.model';
 
@@ -14,117 +13,221 @@ import { Plant } from '../../../core/models/plant.model';
   selector: 'app-quiz-result',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass],
   template: `
-    <div class="result-screen stack stack--lg">
+    <div class="result-screen">
 
-      <!-- Score héros -->
-      <div class="result-screen__hero card card--elevated text-center stack">
-        <span class="result-screen__stars" aria-hidden="true">{{ stars() }}</span>
-        <div>
-          <p class="result-screen__fraction">{{ result.score }} / {{ result.total }}</p>
-          <p class="result-screen__label text-muted">{{ resultLabel() }}</p>
-        </div>
-
-        <div class="result-screen__bar-wrap">
-          <div
-            class="progress-bar progress-bar--lg"
-            [ngClass]="barClass()"
-            role="progressbar"
-            [attr.aria-valuenow]="result.percentage"
-            aria-valuemin="0"
-            aria-valuemax="100"
-          >
-            <div
-              class="progress-bar__fill result-screen__bar-fill"
-              [style.width.%]="result.percentage"
-            ></div>
-          </div>
-          <span class="text-small text-muted">{{ result.percentage }}%</span>
-        </div>
-
-        <!-- Points gagnés -->
-        <p class="result-screen__points">
-          + {{ pointsEarned() }} points &nbsp; {{ levelUpMessage() }}
-        </p>
+      <!-- Header -->
+      <div class="result-screen__header">
+        <span class="result-screen__header-title">Quiz</span>
       </div>
 
-      <!-- Erreurs à retravailler -->
+      <!-- Progress bar (100% filled on result) -->
+      <div class="result-screen__progress">
+        <div class="progress-track">
+          <div class="progress-fill" style="width:100%"></div>
+        </div>
+        <span class="progress-label">{{ result.total }}/{{ result.total }}</span>
+      </div>
+
+      <!-- Praise message -->
+      <p class="result-screen__praise">{{ praiseMessage() }}</p>
+
+      <!-- Score circle -->
+      <div class="result-screen__score-circle">
+        <span class="result-screen__fraction">{{ result.score }}/{{ result.total }}</span>
+      </div>
+
+      <!-- Wrong answers -->
       @if (wrongPlants.length > 0) {
-        <div class="stack--sm">
-          <h3>À retravailler 🍂</h3>
-          <div class="stack--sm">
+        <div class="result-screen__errors">
+          <p class="result-screen__errors-title">Vos erreurs étaient</p>
+          <div class="errors-list">
             @for (plant of wrongPlants; track plant.id) {
-              <div class="card card--flat result-screen__wrong-plant">
-                <div>
-                  <p class="result-screen__plant-name">{{ plant.commonName }}</p>
-                  <p class="text-small text-muted"><em>{{ plant.scientificName }}</em></p>
-                </div>
-                <div class="flex flex--gap-sm">
-                  @if (plant.edible) {
-                    <span class="badge badge--success">Comestible</span>
-                  }
-                  @if (plant.toxic) {
-                    <span class="badge badge--danger">Toxique</span>
-                  }
-                  <span class="badge badge--neutral">{{ plant.family }}</span>
-                </div>
+              <div class="error-row">
+                <span class="error-row__wrong">
+                  {{ plant.commonName }}
+                  <i class="fa-solid fa-xmark error-row__x"></i>
+                </span>
+                <i class="fa-solid fa-arrow-right error-row__arrow"></i>
+                <span class="error-row__correct">
+                  {{ plant.scientificName }}
+                  <i class="fa-solid fa-check error-row__check"></i>
+                </span>
               </div>
             }
           </div>
         </div>
       } @else {
-        <div class="alert alert--success" role="status">
-          <span class="alert__icon">🌿</span>
-          <p class="alert__message">Parfait ! Vous avez tout bon. Remarquable !</p>
-        </div>
+        <p class="result-screen__perfect">Parfait ! Vous avez tout bon. Remarquable !</p>
       }
 
       <!-- Actions -->
-      <div class="flex flex--gap-md flex--wrap">
-        <button class="btn btn--primary" (click)="retry.emit()">Refaire un quiz</button>
-        <button class="btn btn--ghost" (click)="goHome.emit()">Tableau de bord</button>
+      <div class="result-screen__actions">
+        <button class="result-btn result-btn--secondary" (click)="goHome.emit()">Accueil</button>
+        <button class="result-btn result-btn--primary" (click)="retry.emit()">Refaire</button>
       </div>
+
     </div>
   `,
   styles: [`
-    .result-screen__hero { padding: var(--space-8); }
+    .result-screen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: var(--space-4);
+      background: var(--color-bg);
+      gap: var(--space-6);
+    }
 
-    .result-screen__stars { font-size: 2.5rem; line-height: 1; letter-spacing: 0.25rem; }
+    .result-screen__header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4) 0;
+    }
+
+    .result-screen__header-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: var(--weight-bold);
+      color: var(--color-primary-900);
+    }
+
+    .result-screen__progress {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .progress-track {
+      height: 6px;
+      background: var(--color-lime);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--color-primary-900);
+      border-radius: var(--radius-full);
+    }
+
+    .progress-label {
+      font-size: var(--text-base);
+      font-weight: var(--weight-medium);
+      color: var(--color-ink);
+    }
+
+    .result-screen__praise {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      color: var(--color-primary-900);
+      text-align: center;
+      margin: 0;
+      line-height: var(--leading-snug);
+    }
+
+    .result-screen__score-circle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 176px;
+      height: 126px;
+      border: 3px solid var(--color-primary-200);
+      border-radius: var(--radius-xl);
+      align-self: center;
+    }
 
     .result-screen__fraction {
       font-family: var(--font-display);
       font-size: var(--text-4xl);
       font-weight: var(--weight-bold);
-      color: var(--color-primary-600);
+      color: var(--color-primary-900);
+      line-height: 1;
     }
 
-    .result-screen__label { font-size: var(--text-lg); margin-top: var(--space-1); }
-
-    .result-screen__bar-wrap {
+    .result-screen__errors {
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .result-screen__errors-title {
+      font-size: var(--text-base);
+      font-weight: var(--weight-medium);
+      color: var(--color-ink);
+      text-align: center;
+      margin: 0;
+    }
+
+    .errors-list {
+      display: flex;
+      flex-direction: column;
       gap: var(--space-3);
     }
 
-    .progress-bar--lg { height: 12px; flex: 1; }
-
-    .result-screen__bar-fill { transition: width 1s ease; }
-
-    .result-screen__points {
-      font-weight: var(--weight-semibold);
-      color: var(--color-earth-500);
-    }
-
-    .result-screen__wrong-plant {
+    .error-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
+      justify-content: center;
       gap: var(--space-3);
+      font-size: var(--text-sm);
     }
 
-    .result-screen__plant-name { font-weight: var(--weight-medium); }
+    .error-row__wrong {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      color: var(--color-ink);
+    }
+
+    .error-row__x { color: var(--color-error); font-size: 0.75rem; }
+    .error-row__arrow { color: var(--color-stone-400); font-size: 0.75rem; }
+
+    .error-row__correct {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      color: var(--color-ink);
+    }
+
+    .error-row__check { color: var(--color-primary-600); font-size: 0.75rem; }
+
+    .result-screen__perfect {
+      text-align: center;
+      color: var(--color-primary-700);
+      font-size: var(--text-base);
+      margin: 0;
+    }
+
+    .result-screen__actions {
+      margin-top: auto;
+      display: flex;
+      gap: var(--space-4);
+      justify-content: center;
+    }
+
+    .result-btn {
+      padding: var(--space-3) var(--space-6);
+      border-radius: var(--radius-xl);
+      border: none;
+      font-size: var(--text-base);
+      font-weight: var(--weight-medium);
+      cursor: pointer;
+      transition: opacity var(--transition-fast), transform var(--transition-fast);
+      &:hover { opacity: 0.85; }
+      &:active { transform: scale(0.97); }
+
+      &--primary {
+        background: var(--color-primary-900);
+        color: #ebfef5;
+      }
+
+      &--secondary {
+        background: var(--color-periwinkle);
+        color: var(--color-primary-900);
+      }
+    }
   `],
 })
 export class QuizResultComponent {
@@ -134,35 +237,12 @@ export class QuizResultComponent {
   @Output() retry = new EventEmitter<void>();
   @Output() goHome = new EventEmitter<void>();
 
-  readonly stars = computed(() => {
+  readonly praiseMessage = computed(() => {
     const pct = this.result.percentage;
-    if (pct === 100) return '⭐⭐⭐';
-    if (pct >= 70)  return '⭐⭐';
-    if (pct >= 40)  return '⭐';
-    return '🌱';
+    if (pct === 100) return 'Parfait ! Score absolu !';
+    if (pct >= 80)   return 'Bravo ! Vous avez fait un très bon score';
+    if (pct >= 60)   return 'Très bien ! Continuez comme ça';
+    if (pct >= 40)   return 'Pas mal, encore un effort !';
+    return 'Courage, vous progresserez !';
   });
-
-  readonly resultLabel = computed(() => {
-    const pct = this.result.percentage;
-    if (pct === 100) return 'Score parfait !';
-    if (pct >= 80)   return 'Excellent !';
-    if (pct >= 60)   return 'Très bien !';
-    if (pct >= 40)   return 'Pas mal, continuez !';
-    return 'À retravailler — vous y arriverez !';
-  });
-
-  readonly barClass = computed(() => {
-    const pct = this.result.percentage;
-    if (pct >= 70) return 'progress-bar--success';
-    if (pct >= 40) return 'progress-bar--warning';
-    return '';
-  });
-
-  readonly pointsEarned = computed(() => this.result.score * 5);
-
-  levelUpMessage(): string {
-    if (this.result.percentage === 100) return '🏆 Parfait !';
-    if (this.result.percentage >= 80) return '🌿';
-    return '';
-  }
 }

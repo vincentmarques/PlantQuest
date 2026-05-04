@@ -17,138 +17,312 @@ import { Plant } from '../../../core/models/plant.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NgClass],
   template: `
-    <div class="question stack">
+    <div class="question-screen">
 
-      <!-- Progression -->
-      <div class="question__progress">
-        <div class="question__progress-info">
-          <span class="text-small text-muted">Question {{ index + 1 }} / {{ total }}</span>
-          <span class="text-small text-muted">{{ scoreLabel }}</span>
-        </div>
-        <div class="progress-bar" role="progressbar" [attr.aria-valuenow]="progressPct()" aria-valuemin="0" aria-valuemax="100">
-          <div class="progress-bar__fill" [style.width.%]="progressPct()"></div>
-        </div>
+      <!-- Top bar -->
+      <div class="question-screen__topbar">
+        <button class="topbar-btn" (click)="showQuitModal.set(true)" aria-label="Retour">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <span class="topbar-title">Quiz</span>
+        <button class="topbar-btn topbar-btn--skip" (click)="onSkip()" [disabled]="!!answeredId()">
+          Passer
+        </button>
       </div>
 
-      <!-- Contexte plante -->
-      @if (plant) {
-        <div class="question__context card card--flat">
-          <p class="text-small text-muted">Indice</p>
-          @if (plant.description) {
-            <p class="question__description">{{ plant.description }}</p>
-          }
-          @if (plant.habitat.length) {
-            <p class="text-small text-muted">
-              Habitat : {{ plant.habitat.slice(0, 2).join(', ') }}
-            </p>
-          }
+      <!-- Progress -->
+      <div class="question-screen__progress">
+        <div class="progress-track">
+          <div class="progress-fill" [style.width.%]="progressPct()"></div>
         </div>
-      }
+        <span class="progress-label">{{ index + 1 }}/{{ total }}</span>
+      </div>
 
-      <!-- Question -->
-      <h2 class="question__text">{{ question.question }}</h2>
+      <!-- Question text -->
+      <div class="question-screen__body">
+        <h2 class="question-text">{{ question.question }}</h2>
 
-      <!-- Options -->
-      <div class="question__options" [ngClass]="question.type === 'true-false' ? 'question__options--tf' : 'question__options--grid'">
-        @for (opt of question.options; track opt.id) {
-          <button
-            class="card question__option"
-            [ngClass]="optionClass(opt)"
-            [disabled]="!!answeredId()"
-            (click)="selectAnswer(opt)"
-          >
-            <span class="question__option-label">{{ opt.label }}</span>
-            @if (answeredId() && opt.id === question.correctOptionId) {
-              <span class="question__check" aria-hidden="true">✓</span>
-            }
-            @if (answeredId() === opt.id && opt.id !== question.correctOptionId) {
-              <span class="question__cross" aria-hidden="true">✕</span>
-            }
-          </button>
+        @if (plant?.description) {
+          <p class="question-desc">{{ plant!.description }}</p>
         }
+
+        <!-- Image -->
+        @if (plant?.images?.[0]) {
+          <div class="question-image-wrap">
+            <img [src]="plant!.images[0]" [alt]="plant!.commonName" class="question-image" />
+          </div>
+        }
+
+        <!-- Options -->
+        <div class="question-options">
+          @for (opt of question.options; track opt.id) {
+            <button
+              class="answer-card"
+              [ngClass]="optionClass(opt)"
+              [disabled]="!!answeredId()"
+              (click)="selectAnswer(opt)"
+            >
+              <span class="answer-card__label">{{ opt.label }}</span>
+              @if (answeredId() && opt.id === question.correctOptionId) {
+                <i class="fa-solid fa-check answer-card__icon answer-card__icon--correct"></i>
+              }
+              @if (answeredId() === opt.id && opt.id !== question.correctOptionId) {
+                <i class="fa-solid fa-xmark answer-card__icon answer-card__icon--wrong"></i>
+              }
+            </button>
+          }
+        </div>
       </div>
 
-      <!-- Explication (après réponse) -->
-      @if (answeredId() && question.explanation) {
-        <div
-          class="alert"
-          [ngClass]="isCorrect() ? 'alert--success' : 'alert--error'"
-          role="alert"
-        >
-          <span class="alert__icon">{{ isCorrect() ? '🌿' : '🍂' }}</span>
-          <p class="alert__message">{{ question.explanation }}</p>
+      <!-- Quit modal -->
+      @if (showQuitModal()) {
+        <div class="quit-overlay" (click)="showQuitModal.set(false)">
+          <div class="quit-modal" (click)="$event.stopPropagation()">
+            <p class="quit-modal__title">Voulez-vous abandonner ?</p>
+            <p class="quit-modal__sub">Toute la progression sera perdue</p>
+            <div class="quit-modal__actions">
+              <button class="quit-modal__btn quit-modal__btn--cancel" (click)="showQuitModal.set(false)">
+                Continuer
+              </button>
+              <button class="quit-modal__btn quit-modal__btn--confirm" (click)="confirmQuit()">
+                Abandonner
+              </button>
+            </div>
+          </div>
         </div>
       }
+
     </div>
   `,
   styles: [`
-    .question__progress { display: flex; flex-direction: column; gap: var(--space-2); }
-    .question__progress-info { display: flex; justify-content: space-between; }
-
-    .question__context { padding: var(--space-4); }
-    .question__description { margin-top: var(--space-1); line-height: var(--leading-snug); }
-
-    .question__text {
-      font-size: var(--text-xl);
-      line-height: var(--leading-snug);
+    .question-screen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--color-bg);
+      padding: var(--space-4);
+      position: relative;
     }
 
-    .question__options {
-      &--grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: var(--space-3);
-      }
-
-      &--tf {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: var(--space-4);
-      }
-    }
-
-    .question__option {
+    // ---------- Top bar ----------
+    .question-screen__topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: var(--space-3);
-      padding: var(--space-4);
+      margin-bottom: var(--space-4);
+    }
+
+    .topbar-btn {
+      background: none;
+      border: none;
       cursor: pointer;
-      text-align: left;
-      font-weight: var(--weight-medium);
-      border: 2px solid var(--color-border);
-      transition: border-color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast);
+      font-size: var(--text-lg);
+      color: var(--color-primary-900);
+      padding: var(--space-2);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      min-width: 40px;
+      &:hover { background: var(--color-surface-2); }
 
-      &:not([disabled]):hover {
-        border-color: var(--color-primary-400);
-        background-color: var(--color-primary-100);
-        transform: translateY(-1px);
-      }
-
-      &[disabled] { cursor: default; }
-
-      &--correct {
-        border-color: var(--color-success) !important;
-        background-color: var(--color-primary-100) !important;
-        color: var(--color-primary-700);
-      }
-
-      &--wrong {
-        border-color: var(--color-error) !important;
-        background-color: #fde8e6 !important;
-        color: #922b21;
-      }
-
-      &--missed {
-        border-color: var(--color-success) !important;
-        background-color: var(--color-primary-100) !important;
-        opacity: 0.6;
+      &--skip {
+        font-size: var(--text-sm);
+        font-weight: var(--weight-medium);
+        justify-content: flex-end;
+        &:disabled { opacity: 0.4; cursor: default; }
       }
     }
 
-    .question__option-label { flex: 1; }
-    .question__check { color: var(--color-success); font-weight: var(--weight-bold); font-size: var(--text-lg); }
-    .question__cross { color: var(--color-error); font-weight: var(--weight-bold); font-size: var(--text-lg); }
+    .topbar-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: var(--weight-bold);
+      color: var(--color-primary-900);
+    }
+
+    // ---------- Progress ----------
+    .question-screen__progress {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+    }
+
+    .progress-track {
+      height: 6px;
+      background: var(--color-lime);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--color-primary-900);
+      border-radius: var(--radius-full);
+      transition: width var(--transition-base);
+    }
+
+    .progress-label {
+      font-size: var(--text-base);
+      font-weight: var(--weight-medium);
+      color: var(--color-ink);
+    }
+
+    // ---------- Body ----------
+    .question-screen__body {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      flex: 1;
+    }
+
+    .question-text {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      color: var(--color-primary-900);
+      margin: 0;
+      line-height: var(--leading-snug);
+    }
+
+    .question-desc {
+      font-size: var(--text-sm);
+      color: var(--color-ink);
+      line-height: var(--leading-snug);
+      margin: 0;
+    }
+
+    .question-image-wrap {
+      display: flex;
+      justify-content: center;
+    }
+
+    .question-image {
+      width: 227px;
+      height: 227px;
+      object-fit: cover;
+      border-radius: var(--radius-xl);
+    }
+
+    // ---------- Answer cards ----------
+    .question-options {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .answer-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-4);
+      background: #e4facd;
+      border: 1.5px solid var(--color-primary-900);
+      border-radius: var(--radius-xl);
+      cursor: pointer;
+      text-align: left;
+      transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+
+      &:not([disabled]):hover { transform: translateY(-1px); opacity: 0.9; }
+      &[disabled] { cursor: default; }
+
+      &--correct {
+        background: var(--color-primary-200) !important;
+        border-color: var(--color-primary-700) !important;
+      }
+
+      &--wrong {
+        background: #fde8e6 !important;
+        border-color: var(--color-error) !important;
+      }
+
+      &--missed {
+        background: var(--color-primary-100) !important;
+        border-color: var(--color-primary-500) !important;
+        opacity: 0.7;
+      }
+    }
+
+    .answer-card__label {
+      font-size: var(--text-base);
+      font-weight: var(--weight-medium);
+      color: var(--color-ink);
+      flex: 1;
+    }
+
+    .answer-card__icon {
+      font-size: var(--text-base);
+      flex-shrink: 0;
+      &--correct { color: var(--color-primary-700); }
+      &--wrong   { color: var(--color-error); }
+    }
+
+    // ---------- Quit modal ----------
+    .quit-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(1, 90, 61, 0.5);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: var(--z-modal);
+      padding: var(--space-6);
+    }
+
+    .quit-modal {
+      background: var(--color-surface);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8) var(--space-6);
+      width: 100%;
+      max-width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      text-align: center;
+      box-shadow: var(--shadow-xl);
+    }
+
+    .quit-modal__title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: var(--weight-bold);
+      color: var(--color-primary-900);
+      margin: 0;
+    }
+
+    .quit-modal__sub {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      margin: 0;
+    }
+
+    .quit-modal__actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      margin-top: var(--space-2);
+    }
+
+    .quit-modal__btn {
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-xl);
+      border: none;
+      font-size: var(--text-base);
+      font-weight: var(--weight-medium);
+      cursor: pointer;
+      transition: opacity var(--transition-fast);
+      &:hover { opacity: 0.85; }
+
+      &--cancel {
+        background: var(--color-surface-2);
+        color: var(--color-ink);
+      }
+
+      &--confirm {
+        background: var(--color-primary-900);
+        color: #ebfef5;
+      }
+    }
   `],
 })
 export class QuestionComponent {
@@ -159,8 +333,11 @@ export class QuestionComponent {
   @Input() correctCount = 0;
 
   @Output() answered = new EventEmitter<string>();
+  @Output() skip = new EventEmitter<void>();
+  @Output() quit = new EventEmitter<void>();
 
   readonly answeredId = signal<string | null>(null);
+  readonly showQuitModal = signal(false);
 
   readonly isCorrect = computed(() => this.answeredId() === this.question.correctOptionId);
 
@@ -168,27 +345,33 @@ export class QuestionComponent {
     this.total > 0 ? Math.round((this.index / this.total) * 100) : 0
   );
 
-  get scoreLabel(): string {
-    return `${this.correctCount} / ${this.index} ✓`;
-  }
-
   selectAnswer(opt: QuizOption): void {
     if (this.answeredId()) return;
     this.answeredId.set(opt.id);
     this.answered.emit(opt.id);
   }
 
+  onSkip(): void {
+    if (this.answeredId()) return;
+    this.skip.emit();
+  }
+
+  confirmQuit(): void {
+    this.showQuitModal.set(false);
+    this.quit.emit();
+  }
+
   optionClass(opt: QuizOption): Record<string, boolean> {
     const answered = this.answeredId();
-    if (!answered) return { 'card--interactive': true };
+    if (!answered) return {};
 
     const isCorrect = opt.id === this.question.correctOptionId;
     const isSelected = opt.id === answered;
 
     return {
-      'question__option--correct': isCorrect && isSelected,
-      'question__option--wrong': !isCorrect && isSelected,
-      'question__option--missed': isCorrect && !isSelected,
+      'answer-card--correct': isCorrect && isSelected,
+      'answer-card--wrong':   !isCorrect && isSelected,
+      'answer-card--missed':  isCorrect && !isSelected,
     };
   }
 
