@@ -60,7 +60,7 @@ export interface SessionOutcome {
           <!-- Compteur de questions -->
           <div class="text-right">
             <p class="text-small text-muted">{{ currentIndex() + 1 }} / {{ questions.length }}</p>
-            <p class="text-small" style="color: var(--color-green-500)">{{ correctCount() }} ✓</p>
+            <p class="text-small" style="color: var(--color-primary-500)">{{ correctCount() }} ✓</p>
           </div>
         </div>
 
@@ -113,7 +113,7 @@ export interface SessionOutcome {
       font-family: var(--font-display);
       font-size: var(--text-3xl);
       font-weight: var(--weight-bold);
-      color: var(--color-green-600);
+      color: var(--color-primary-600);
       transition: color var(--transition-fast);
     }
 
@@ -128,7 +128,7 @@ export interface SessionOutcome {
       transition: color var(--transition-spring), transform var(--transition-spring);
 
       &--active {
-        color: var(--color-green-500);
+        color: var(--color-primary-500);
         transform: scale(1.2);
       }
     }

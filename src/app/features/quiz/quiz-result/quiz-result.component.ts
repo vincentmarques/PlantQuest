@@ -96,7 +96,7 @@ import { Plant } from '../../../core/models/plant.model';
       font-family: var(--font-display);
       font-size: var(--text-4xl);
       font-weight: var(--weight-bold);
-      color: var(--color-green-600);
+      color: var(--color-primary-600);
     }
 
     .result-screen__label { font-size: var(--text-lg); margin-top: var(--space-1); }

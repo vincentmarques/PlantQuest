@@ -107,14 +107,14 @@ import { NgClass } from '@angular/common';
       min-height: 280px;
 
       &:hover, &:focus-visible {
-        border-color: var(--color-green-400);
-        background-color: var(--color-green-100);
+        border-color: var(--color-primary-400);
+        background-color: var(--color-primary-100);
         outline: none;
       }
 
       &--drag-over {
-        border-color: var(--color-green-500);
-        background-color: var(--color-green-100);
+        border-color: var(--color-primary-500);
+        background-color: var(--color-primary-100);
         transform: scale(1.01);
       }
     }

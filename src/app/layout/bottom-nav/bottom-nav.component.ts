@@ -8,11 +8,10 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { path: '/dashboard',  icon: '🏠', label: 'Accueil'  },
-  { path: '/identify',   icon: '📷', label: 'Scanner'  },
-  { path: '/quiz',       icon: '🧠', label: 'Quiz'     },
-  { path: '/challenge',  icon: '🏆', label: 'Défis'    },
-  { path: '/collection', icon: '📖', label: 'Herbier'  },
+  { path: '/dashboard',  icon: '🏠', label: 'Accueil' },
+  { path: '/quiz',       icon: '❓', label: 'Quiz'    },
+  { path: '/collection', icon: '🌿', label: 'Herbier' },
+  { path: '/challenge',  icon: '🏆', label: 'Trophée' },
 ];
 
 @Component({
@@ -74,9 +73,9 @@ const NAV_ITEMS: NavItem[] = [
       flex: 1;
 
       &--active {
-        color: var(--color-green-500);
+        color: var(--color-primary-500);
 
-        .bottom-nav__dot { opacity: 1; transform: scale(1); }
+        .bottom-nav__dot  { opacity: 1; transform: scale(1); }
         .bottom-nav__icon { transform: scale(1.15); }
       }
     }
@@ -102,7 +101,7 @@ const NAV_ITEMS: NavItem[] = [
       width: 4px;
       height: 4px;
       border-radius: var(--radius-full);
-      background-color: var(--color-green-500);
+      background-color: var(--color-primary-500);
       opacity: 0;
       transition: opacity var(--transition-fast), transform var(--transition-spring);
     }

@@ -113,7 +113,7 @@ import { BadgeComponent } from '../../../shared/components/badge/badge.component
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, var(--color-green-50), var(--color-green-100));
+      background: linear-gradient(135deg, var(--color-primary-50), var(--color-primary-100));
     }
 
     .plant-card__image-icon {

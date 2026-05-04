@@ -17,15 +17,18 @@ $bp-xl:  1280px;
 // CSS Custom Properties
 // ============================================================
 :root {
-  // --- Palette verte — plus vive, plus fraîche ---
-  --color-green-50:  #edfaee;
-  --color-green-100: #d4f4d6;
-  --color-green-200: #a4e4a9;
-  --color-green-300: #68cc71;
-  --color-green-400: #4ab852;
-  --color-green-500: #3aaa42;   // Primaire
-  --color-green-600: #2a8a31;
-  --color-green-700: #1a6020;
+  // --- Palette primaire ---
+  --color-primary-50:  #ebfbf5;
+  --color-primary-100: #d7f6ec;
+  --color-primary-200: #aeedd9;
+  --color-primary-300: #81e3c4;
+  --color-primary-400: #53d9ae;
+  --color-primary-500: #02c788;
+  --color-primary-600: #02af78;
+  --color-primary-700: #029566;
+  --color-primary-800: #017752;
+  --color-primary-900: #015a3d;
+  --color-primary-950: #01402c;
 
   // --- Palette secondaire — terres douces ---
   --color-earth-100: #fdf6ec;
@@ -47,8 +50,13 @@ $bp-xl:  1280px;
   --color-stone-600: #5a6a5a;
   --color-ink:       #141c14;   // Quasi-noir légèrement vert
 
+  // --- Accents Home (Figma) ---
+  --color-lime:        #c9f69e;
+  --color-lime-text:   #005c45;
+  --color-periwinkle:  #b0c6f5;
+
   // --- Sémantiques ---
-  --color-success: var(--color-green-500);
+  --color-success: var(--color-primary-500);
   --color-warning: #e6971e;
   --color-error:   #e03e2d;
   --color-info:    #2980b9;

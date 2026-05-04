@@ -120,8 +120,8 @@ import { Plant } from '../../../core/models/plant.model';
       transition: border-color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast);
 
       &:not([disabled]):hover {
-        border-color: var(--color-green-400);
-        background-color: var(--color-green-100);
+        border-color: var(--color-primary-400);
+        background-color: var(--color-primary-100);
         transform: translateY(-1px);
       }
 
@@ -129,8 +129,8 @@ import { Plant } from '../../../core/models/plant.model';
 
       &--correct {
         border-color: var(--color-success) !important;
-        background-color: var(--color-green-100) !important;
-        color: var(--color-green-700);
+        background-color: var(--color-primary-100) !important;
+        color: var(--color-primary-700);
       }
 
       &--wrong {
@@ -141,7 +141,7 @@ import { Plant } from '../../../core/models/plant.model';
 
       &--missed {
         border-color: var(--color-success) !important;
-        background-color: var(--color-green-100) !important;
+        background-color: var(--color-primary-100) !important;
         opacity: 0.6;
       }
     }

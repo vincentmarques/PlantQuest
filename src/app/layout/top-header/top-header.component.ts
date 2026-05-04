@@ -60,7 +60,7 @@ import { LEVEL_LABELS } from '../../core/models/user-progress.model';
     }
 
     .top-header__avatar {
-      background-color: var(--color-green-100);
+      background-color: var(--color-primary-100);
       font-size: 1rem;
     }
 
@@ -73,7 +73,7 @@ import { LEVEL_LABELS } from '../../core/models/user-progress.model';
     .top-header__level {
       font-size: var(--text-xs);
       font-weight: var(--weight-semibold);
-      color: var(--color-green-600);
+      color: var(--color-primary-600);
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
@@ -87,7 +87,7 @@ import { LEVEL_LABELS } from '../../core/models/user-progress.model';
       font-family: var(--font-display);
       font-size: var(--text-lg);
       font-weight: var(--weight-bold);
-      color: var(--color-green-600);
+      color: var(--color-primary-600);
       text-decoration: none;
       letter-spacing: -0.01em;
     }

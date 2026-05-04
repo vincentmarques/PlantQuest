@@ -156,12 +156,12 @@ type IdentifyState = 'idle' | 'identifying' | 'result' | 'detail' | 'error';
       background: linear-gradient(
         to right,
         transparent,
-        var(--color-green-400) 20%,
-        var(--color-green-300) 50%,
-        var(--color-green-400) 80%,
+        var(--color-primary-400) 20%,
+        var(--color-primary-300) 50%,
+        var(--color-primary-400) 80%,
         transparent
       );
-      box-shadow: 0 0 12px var(--color-green-400), 0 0 4px var(--color-green-300);
+      box-shadow: 0 0 12px var(--color-primary-400), 0 0 4px var(--color-primary-300);
       animation: scanLine 2s ease-in-out infinite;
     }
 

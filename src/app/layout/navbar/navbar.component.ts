@@ -123,7 +123,7 @@ const NAV_ITEMS: NavItem[] = [
       font-family: var(--font-display);
       font-size: var(--text-lg);
       font-weight: var(--weight-bold);
-      color: var(--color-green-600);
+      color: var(--color-primary-600);
     }
 
     .navbar__nav {
@@ -150,8 +150,8 @@ const NAV_ITEMS: NavItem[] = [
       white-space: nowrap;
 
       &:hover, &--active {
-        background-color: var(--color-green-100);
-        color: var(--color-green-600);
+        background-color: var(--color-primary-100);
+        color: var(--color-primary-600);
       }
     }
 
@@ -208,8 +208,8 @@ const NAV_ITEMS: NavItem[] = [
       transition: background-color var(--transition-fast), color var(--transition-fast);
 
       &:hover, &--active {
-        background-color: var(--color-green-100);
-        color: var(--color-green-600);
+        background-color: var(--color-primary-100);
+        color: var(--color-primary-600);
       }
     }
 

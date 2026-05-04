@@ -21,7 +21,7 @@ export const routes: Routes = [
         path: 'dashboard',
         loadComponent: () =>
           import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent),
-        title: 'Tableau de bord — PlantQuest',
+        title: 'Accueil — PlantQuest',
       },
       {
         path: 'identify',

@@ -163,7 +163,7 @@ import { PlantIdentificationResult } from '../../../core/models/plant.model';
 
     .result__common-name {
       font-size: var(--text-2xl);
-      color: var(--color-green-700);
+      color: var(--color-primary-700);
     }
 
     .result__scientific-name { font-size: var(--text-base); }

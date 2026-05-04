@@ -93,8 +93,8 @@ const OPTIONS: DifficultyOption[] = [
       transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
 
       &--selected {
-        border-color: var(--color-green-400);
-        box-shadow: 0 0 0 2px var(--color-green-200);
+        border-color: var(--color-primary-400);
+        box-shadow: 0 0 0 2px var(--color-primary-200);
       }
     }
 
