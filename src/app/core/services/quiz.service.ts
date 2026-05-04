@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Plant } from '../models/plant.model';
+import { PlantCategory, PLANT_CATEGORY_MAP, getPlantCategory } from '../models/plant-category.model';
 import { QuizQuestion, QuizOption, QuizSession, QuizResult, Difficulty } from '../models/quiz.model';
 import PLANTS_DATA from '../../../assets/plants/plants.json';
 
@@ -19,12 +20,18 @@ const DIFFICULTY_PLANT_MAP: Record<Difficulty, string[]> = {
 export class QuizService {
   private readonly plants: Plant[] = PLANTS_DATA as Plant[];
 
-  generateSession(difficulty: Difficulty): QuizSession {
+  generateSession(difficulty: Difficulty, category?: PlantCategory): QuizSession {
     const allowedDifficulties = DIFFICULTY_PLANT_MAP[difficulty];
-    const pool = this.plants.filter(p => allowedDifficulties.includes(p.difficulty));
+    let pool = this.plants.filter(p => allowedDifficulties.includes(p.difficulty));
+
+    if (category) {
+      const filtered = pool.filter(p => getPlantCategory(p.id) === category);
+      // Fall back to full pool if not enough plants in category
+      pool = filtered.length >= 3 ? filtered : pool;
+    }
+
     const count = Math.min(QUESTION_COUNTS[difficulty], pool.length);
     const selected = this.shuffle([...pool]).slice(0, count);
-
     const questions = selected.map(plant => this.pickQuestion(plant));
 
     return {
@@ -65,7 +72,6 @@ export class QuizService {
       this.buildFamilyQuestion.bind(this),
       this.buildHabitatQuestion.bind(this),
     ];
-    // Rotate generator based on plant id hash for variety
     const idx = plant.id.length % generators.length;
     return generators[idx](plant);
   }
@@ -95,7 +101,6 @@ export class QuizService {
     const isTrue = Math.random() < 0.5;
     const statementIsEdible = isTrue ? claim : !claim;
     const statementText = statementIsEdible ? 'comestible' : 'non comestible';
-
     const correctId = isTrue ? 'true' : 'false';
 
     return {
@@ -105,7 +110,7 @@ export class QuizService {
       question: `Le ${plant.commonName} est ${statementText}. Vrai ou Faux ?`,
       explanation: `Le ${plant.commonName} est ${claimText}.${plant.toxic ? ' Attention, cette plante est également toxique !' : ''}`,
       options: [
-        { id: 'true',  label: '✓ Vrai'  },
+        { id: 'true',  label: '✓ Vrai' },
         { id: 'false', label: '✕ Faux' },
       ],
       correctOptionId: correctId,

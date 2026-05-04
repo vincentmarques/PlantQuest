@@ -11,6 +11,7 @@ import { QuizService } from '../../core/services/quiz.service';
 import { UserProgressService } from '../../core/services/user-progress.service';
 import { CollectionService } from '../../core/services/collection.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { PlantCategory, CATEGORIES } from '../../core/models/plant-category.model';
 import { QuizSession, QuizResult, Difficulty } from '../../core/models/quiz.model';
 import { Plant } from '../../core/models/plant.model';
 import { QuizSetupComponent } from './quiz-setup/quiz-setup.component';
@@ -18,7 +19,7 @@ import { QuestionComponent } from './question/question.component';
 import { QuizResultComponent } from './quiz-result/quiz-result.component';
 import { LoaderComponent } from '../../shared/components/loader/loader.component';
 
-type QuizState = 'setup' | 'playing' | 'feedback' | 'result';
+type QuizState = 'category' | 'setup' | 'playing' | 'feedback' | 'result';
 
 const FEEDBACK_DELAY_MS = 1800;
 
@@ -31,8 +32,30 @@ const FEEDBACK_DELAY_MS = 1800;
     <div class="container quiz-page">
       @switch (state()) {
 
+        @case ('category') {
+          <div class="quiz-categories">
+            <header class="quiz-categories__header">
+              <h1 class="quiz-categories__title">Quiz</h1>
+              <p class="quiz-categories__sub">Choisissez une catégorie</p>
+            </header>
+
+            <div class="quiz-categories__list">
+              @for (cat of categories; track cat.key) {
+                <button class="cat-card cat-card--{{ cat.key }}" (click)="onSelectCategory(cat.key)">
+                  <span class="cat-card__icon" aria-hidden="true">{{ cat.icon }}</span>
+                  <span class="cat-card__label">{{ cat.label }}</span>
+                  <span class="cat-card__sub">{{ cat.sub }}</span>
+                </button>
+              }
+            </div>
+          </div>
+        }
+
         @case ('setup') {
-          <app-quiz-setup (started)="onStart($event)" />
+          <div class="quiz-setup-wrapper">
+            <button class="quiz-back-btn" (click)="state.set('category')">← Catégories</button>
+            <app-quiz-setup (started)="onStart($event)" />
+          </div>
         }
 
         @case ('playing') {
@@ -66,12 +89,107 @@ const FEEDBACK_DELAY_MS = 1800;
             (goHome)="router.navigate(['/dashboard'])"
           />
         }
+
       }
     </div>
   `,
   styles: [`
     .quiz-page { max-width: 680px; }
     .quiz-page__feedback { padding: var(--space-16) 0; }
+
+    // ----- Category selection -----
+    .quiz-categories {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+      padding-top: var(--space-6);
+    }
+
+    .quiz-categories__header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .quiz-categories__title {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: var(--weight-bold);
+      color: var(--color-primary-900);
+      margin: 0;
+    }
+
+    .quiz-categories__sub {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      margin: 0;
+    }
+
+    .quiz-categories__list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .cat-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-3);
+      padding: var(--space-8) var(--space-6);
+      border-radius: var(--radius-xl);
+      border: none;
+      cursor: pointer;
+      text-align: center;
+      transition: transform var(--transition-base), box-shadow var(--transition-base);
+
+      &:hover  { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+      &:active { transform: scale(0.98); }
+
+      &--arbres {
+        background-color: var(--color-primary-900);
+        color: #fff;
+        .cat-card__sub { color: rgba(255,255,255,0.7); }
+      }
+
+      &--fleurs-herbes {
+        background-color: var(--color-lime);
+        color: var(--color-lime-text);
+        .cat-card__sub { color: rgba(0,92,69,0.7); }
+      }
+
+      &--potager {
+        background-color: var(--color-periwinkle);
+        color: var(--color-primary-900);
+        .cat-card__sub { color: rgba(1,90,61,0.7); }
+      }
+    }
+
+    .cat-card__icon  { font-size: 2rem; line-height: 1; }
+    .cat-card__label { font-family: var(--font-display); font-size: var(--text-lg); font-weight: var(--weight-bold); }
+    .cat-card__sub   { font-size: var(--text-xs); }
+
+    // ----- Back button -----
+    .quiz-back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      margin-bottom: var(--space-4);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      border-radius: var(--radius-md);
+      transition: color var(--transition-fast), background var(--transition-fast);
+
+      &:hover { color: var(--color-primary-600); background-color: var(--color-surface-2); }
+    }
+
+    .quiz-setup-wrapper { display: flex; flex-direction: column; }
   `],
 })
 export class QuizComponent {
@@ -83,7 +201,10 @@ export class QuizComponent {
   private readonly notifications = inject(NotificationService);
   readonly router = inject(Router);
 
-  readonly state = signal<QuizState>('setup');
+  readonly categories = CATEGORIES;
+
+  readonly state = signal<QuizState>('category');
+  readonly selectedCategory = signal<PlantCategory | null>(null);
   readonly session = signal<QuizSession | null>(null);
   readonly currentIndex = signal(0);
   readonly correctCount = signal(0);
@@ -113,8 +234,13 @@ export class QuizComponent {
       .filter((p): p is Plant => !!p);
   });
 
+  onSelectCategory(category: PlantCategory): void {
+    this.selectedCategory.set(category);
+    this.state.set('setup');
+  }
+
   onStart(difficulty: Difficulty): void {
-    const s = this.quizService.generateSession(difficulty);
+    const s = this.quizService.generateSession(difficulty, this.selectedCategory() ?? undefined);
     this.session.set(s);
     this.currentIndex.set(0);
     this.correctCount.set(0);
@@ -125,7 +251,6 @@ export class QuizComponent {
     const q = this.currentQuestion();
     if (!q) return;
 
-    // Record the answer
     this.session.update(s => {
       if (!s) return s;
       return { ...s, answers: { ...s.answers, [q.id]: optionId } };
@@ -160,7 +285,6 @@ export class QuizComponent {
     const result = this.quizService.scoreSession(completed);
     this.quizResult.set(result);
 
-    // Update user progress
     this.progressService.addScore(result.score * 5);
     this.progressService.incrementQuizzesCompleted();
     result.session.questions
@@ -188,6 +312,6 @@ export class QuizComponent {
     this.quizResult.set(null);
     this.currentIndex.set(0);
     this.correctCount.set(0);
-    this.state.set('setup');
+    this.state.set('category');
   }
 }

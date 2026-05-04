@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { CollectionService } from '../../core/services/collection.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { PlantCategory, CATEGORIES, getPlantCategory } from '../../core/models/plant-category.model';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 import { PlantCardComponent } from './plant-card/plant-card.component';
 import { PlantNoteComponent } from './plant-note/plant-note.component';
@@ -56,6 +57,28 @@ type SortKey = 'date-desc' | 'date-asc' | 'name' | 'mastery-desc';
           </div>
         </div>
 
+        <!-- Onglets catégorie -->
+        <div class="collection__tabs" role="tablist" aria-label="Catégories">
+          <button
+            role="tab"
+            class="collection__tab"
+            [class.collection__tab--active]="!selectedCategory()"
+            [attr.aria-selected]="!selectedCategory()"
+            (click)="selectedCategory.set(null)"
+          >Toutes</button>
+          @for (cat of categories; track cat.key) {
+            <button
+              role="tab"
+              class="collection__tab"
+              [class.collection__tab--active]="selectedCategory() === cat.key"
+              [attr.aria-selected]="selectedCategory() === cat.key"
+              (click)="selectedCategory.set(cat.key)"
+            >
+              <span aria-hidden="true">{{ cat.icon }}</span> {{ cat.label }}
+            </button>
+          }
+        </div>
+
         <!-- Barre de recherche + filtres -->
         <div class="collection__filters">
           <div class="collection__search-wrap">
@@ -68,21 +91,6 @@ type SortKey = 'date-desc' | 'date-asc' | 'name' | 'mastery-desc';
             />
           </div>
 
-          <select class="input collection__select" [(ngModel)]="selectedFamily">
-            <option value="">Toutes les familles</option>
-            @for (family of families(); track family) {
-              <option [value]="family">{{ family }}</option>
-            }
-          </select>
-
-          <select class="input collection__select" [(ngModel)]="selectedMastery">
-            <option value="">Toute maîtrise</option>
-            <option value="0">Non maîtrisée</option>
-            <option value="1">★ Débutant</option>
-            <option value="3">★★★ Intermédiaire</option>
-            <option value="5">★★★★★ Expert</option>
-          </select>
-
           <select class="input collection__select" [(ngModel)]="sortKey">
             <option value="date-desc">Plus récentes</option>
             <option value="date-asc">Plus anciennes</option>
@@ -91,7 +99,6 @@ type SortKey = 'date-desc' | 'date-asc' | 'name' | 'mastery-desc';
           </select>
         </div>
 
-        <!-- Indicateur de filtre actif -->
         @if (activeFilterCount() > 0) {
           <div class="collection__filter-status">
             <span class="text-small text-muted">{{ filteredEntries().length }} résultat{{ filteredEntries().length !== 1 ? 's' : '' }}</span>
@@ -104,7 +111,7 @@ type SortKey = 'date-desc' | 'date-asc' | 'name' | 'mastery-desc';
       <div class="container">
         @if (collectionService.count() === 0) {
           <app-empty-state
-            icon="📖"
+            icon="🌿"
             title="Votre herbier est vide"
             description="Identifiez des plantes et ajoutez-les à votre collection."
           >
@@ -114,9 +121,9 @@ type SortKey = 'date-desc' | 'date-asc' | 'name' | 'mastery-desc';
           <app-empty-state
             icon="🔍"
             title="Aucun résultat"
-            description="Aucune plante ne correspond à vos critères de recherche."
+            description="Aucune plante ne correspond à vos critères."
           >
-            <button class="btn btn--ghost" (click)="clearFilters()">Réinitialiser les filtres</button>
+            <button class="btn btn--ghost" (click)="clearFilters()">Réinitialiser</button>
           </app-empty-state>
         } @else {
           <div [class]="viewMode() === 'grid' ? 'grid grid--auto' : 'collection__list'">
@@ -176,6 +183,42 @@ type SortKey = 'date-desc' | 'date-asc' | 'name' | 'mastery-desc';
       flex-shrink: 0;
     }
 
+    // ----- Category tabs -----
+    .collection__tabs {
+      display: flex;
+      gap: var(--space-2);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      &::-webkit-scrollbar { display: none; }
+    }
+
+    .collection__tab {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-full);
+      border: var(--border-width) solid var(--color-border);
+      background-color: var(--color-surface);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-medium);
+      color: var(--color-text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all var(--transition-fast);
+      flex-shrink: 0;
+
+      &:hover { border-color: var(--color-primary-400); color: var(--color-primary-600); }
+
+      &--active {
+        background-color: var(--color-primary-900);
+        border-color: var(--color-primary-900);
+        color: #fff;
+      }
+    }
+
+    // ----- Filters -----
     .collection__filters {
       display: flex;
       flex-wrap: wrap;
@@ -239,22 +282,21 @@ export class CollectionComponent {
   readonly collectionService = inject(CollectionService);
   private readonly notifications = inject(NotificationService);
 
+  readonly categories = CATEGORIES;
   readonly viewMode = signal<'grid' | 'list'>('grid');
-
-  searchQuery = '';
-  selectedFamily = '';
-  selectedMastery = '';
-  sortKey: SortKey = 'date-desc';
-
+  readonly selectedCategory = signal<PlantCategory | null>(null);
   readonly noteTarget = signal<CollectionEntry | null>(null);
 
-  readonly families = computed(() => {
-    const all = this.collectionService.entries().map(e => e.plant.family);
-    return [...new Set(all)].sort();
-  });
+  searchQuery = '';
+  sortKey: SortKey = 'date-desc';
 
   readonly filteredEntries = computed(() => {
     let entries = [...this.collectionService.entries()];
+
+    const category = this.selectedCategory();
+    if (category) {
+      entries = entries.filter(e => getPlantCategory(e.plant.id) === category);
+    }
 
     if (this.searchQuery.trim()) {
       const q = this.searchQuery.toLowerCase();
@@ -264,15 +306,6 @@ export class CollectionComponent {
           e.plant.scientificName.toLowerCase().includes(q) ||
           e.plant.family.toLowerCase().includes(q)
       );
-    }
-
-    if (this.selectedFamily) {
-      entries = entries.filter(e => e.plant.family === this.selectedFamily);
-    }
-
-    if (this.selectedMastery !== '') {
-      const min = Number(this.selectedMastery);
-      entries = entries.filter(e => e.masteryLevel >= min);
     }
 
     switch (this.sortKey) {
@@ -295,20 +328,16 @@ export class CollectionComponent {
   readonly activeFilterCount = computed(() => {
     let count = 0;
     if (this.searchQuery.trim()) count++;
-    if (this.selectedFamily) count++;
-    if (this.selectedMastery !== '') count++;
+    if (this.selectedCategory()) count++;
     return count;
   });
 
   clearFilters(): void {
     this.searchQuery = '';
-    this.selectedFamily = '';
-    this.selectedMastery = '';
+    this.selectedCategory.set(null);
   }
 
-  onOpenDetail(_plantId: string): void {
-    // Fiche détail — délégué à PlantDetailComponent (feature identify)
-  }
+  onOpenDetail(_plantId: string): void {}
 
   onEditNote(plantId: string): void {
     const entry = this.collectionService.getEntry(plantId);
